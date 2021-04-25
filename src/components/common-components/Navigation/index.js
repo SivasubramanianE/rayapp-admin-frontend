@@ -21,6 +21,13 @@ export default function Navigation({
     setActiveNav(id);
     let activeNavObject = navigation.find((n) => n.id === id);
     history.push(activeNavObject.route);
+
+    const mobileMedia = window.matchMedia("only screen and (max-width:960px)");
+    const portraitMedia = window.matchMedia("(orientation: portrait)");
+
+    if (mobileMedia.matches || portraitMedia.matches) {
+      setNavigationExpanded(false);
+    }
   };
 
   return navigationExpanded === true ? (

@@ -194,8 +194,12 @@ export default function BasicInfoForm({ nextStep }) {
           </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <PrimaryButton type="primary" htmlType="submit" className="submit-btn">
-              Submit
+            <PrimaryButton
+              type="primary"
+              /* htmlType="submit" */ className="submit-btn"
+              onClick={nextStep}
+            >
+              Next
             </PrimaryButton>
           </Form.Item>
         </Form>

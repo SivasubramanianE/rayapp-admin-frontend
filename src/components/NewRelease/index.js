@@ -2,6 +2,8 @@ import React from "react";
 import { Steps, Button, message } from "antd";
 import { StepperFormWrapper } from "./styles";
 import BasicInfoForm from "./BasicInfoForm";
+import TrackList from "./TrackList";
+import { PrimaryButton } from "../common-components/PrimaryButton/styles";
 
 const { Step } = Steps;
 
@@ -40,25 +42,26 @@ export default function NewRelease() {
       </Steps>
       <div className="steps-content">
         {current === 0 && <BasicInfoForm nextStep={next} />}
+        {current === 1 && <TrackList />}
       </div>
       <div className="steps-action">
-        {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
+        {current > 0 && (
+          <PrimaryButton style={{ margin: "0 8px" }} onClick={() => prev()}>
+            Previous
+          </PrimaryButton>
+        )}
+        {current > 0 && current < steps.length - 1 && (
+          <PrimaryButton type="primary" onClick={() => next()}>
             Next
-          </Button>
+          </PrimaryButton>
         )}
         {current === steps.length - 1 && (
-          <Button
+          <PrimaryButton
             type="primary"
             onClick={() => message.success("Processing complete!")}
           >
-            Done
-          </Button>
-        )}
-        {current > 0 && (
-          <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-            Previous
-          </Button>
+            Publish
+          </PrimaryButton>
         )}
       </div>
     </StepperFormWrapper>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavButton, NavigationWrapper } from "./styles";
 import {
   CloseOutlined,
@@ -6,7 +6,7 @@ import {
   FundFilled,
   PlusCircleFilled,
 } from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 export default function Navigation({
   navigationExpanded,
@@ -15,6 +15,7 @@ export default function Navigation({
   setActiveNav,
 }) {
   const history = useHistory();
+  const location = useLocation();
 
   const navigation = [
     {
@@ -49,6 +50,16 @@ export default function Navigation({
       setNavigationExpanded(false);
     }
   };
+
+  useEffect(() => {
+    let path = location.pathname;
+    let activeMenu = navigation.find((nav) => nav.route === path);
+
+    if (activeMenu) {
+      setActiveNav(activeMenu.id);
+    }
+    //eslint-disable-next-line
+  }, [location]);
 
   return navigationExpanded === true ? (
     <NavigationWrapper>

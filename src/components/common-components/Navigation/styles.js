@@ -7,6 +7,9 @@ export const NavigationWrapper = styled.div`
   background-color: ${theme.colors.surface};
   border-right: 1px solid ${theme.colors.textOnSurface}1D;
   z-index: calc(${theme.baseZIndex} + 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   ${theme.media.mobile}, ${theme.media.portrait} {
     width: 100%;
@@ -24,7 +27,6 @@ export const NavigationWrapper = styled.div`
 
     .logo-container {
       display: flex;
-      width: 120px;
       flex-direction: column;
       align-items: center;
 
@@ -84,8 +86,7 @@ export const NavigationWrapper = styled.div`
 export const NavButton = styled.div`
   border-radius: ${theme.button.borderRadius};
   margin: 4px 0;
-  min-width: 12rem;
-  max-width: 15rem;
+  width: 13rem;
   padding: 14px 16px;
   text-align: left;
   cursor: pointer;

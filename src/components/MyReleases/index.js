@@ -9,11 +9,15 @@ const columns = [
     dataIndex: "release_title",
     render: (text) => (
       <div className="release-meta">
-        <Avatar size="large"></Avatar>
+        <Avatar
+          size="large"
+          src={"https://picsum.photos/200/300?random=" + Math.random()}
+        ></Avatar>
         <div className="release-title">{text}</div>
       </div>
     ),
   },
+  { title: "Primary Artist", render: () => "Shrihari Prakash" },
   {
     title: "Release Date",
     dataIndex: "release_date",
@@ -124,6 +128,7 @@ export default function MyReleases() {
         columns={columns}
         dataSource={data}
         pagination={{ pageSize: 10 }}
+        scroll={{ x: 960 }}
       />
     </MyReleasesWrapper>
   );

@@ -62,7 +62,7 @@ export const NavigationWrapper = styled.div`
   ${theme.media.mobile}, ${theme.media.portrait} {
     .hamburger-icon {
       display: block;
-      position: absolute;
+      position: fixed;
       top: 1.4rem;
       right: 1rem;
       cursor: pointer;
@@ -87,7 +87,7 @@ export const NavButton = styled.div`
   min-width: 12rem;
   max-width: 15rem;
   padding: 14px 16px;
-  text-align: center;
+  text-align: left;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: all 0.1s ease-in-out;

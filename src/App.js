@@ -6,9 +6,11 @@ import { Page, PageContent } from "./components/common-components/Page/styles";
 import PageHeader from "./components/common-components/PageHeader";
 import { useEffect, useState } from "react";
 import theme from "./styles/theme";
+import MyReleasesPage from "./pages/MyReleases";
 
 function App() {
   const [navigationExpanded, setNavigationExpanded] = useState(true);
+  const [activeNav, setActiveNav] = useState(1);
 
   useEffect(() => {
     const mobileMedia = window.matchMedia("only screen and (max-width:960px)");
@@ -33,6 +35,8 @@ function App() {
         <Navigation
           navigationExpanded={navigationExpanded}
           setNavigationExpanded={setNavigationExpanded}
+          activeNav={activeNav}
+          setActiveNav={setActiveNav}
         ></Navigation>
         <Page>
           <PageHeader
@@ -45,6 +49,9 @@ function App() {
               </Route>
               <Route exact path="/new-release">
                 <NewReleasepage />
+              </Route>
+              <Route exact path="/my-releases">
+                <MyReleasesPage />
               </Route>
             </Switch>
           </PageContent>

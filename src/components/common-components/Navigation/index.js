@@ -1,20 +1,40 @@
 import React, { useState } from "react";
 import { NavButton, NavigationWrapper } from "./styles";
-import { MenuOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  FolderFilled,
+  FundFilled,
+  PlusCircleFilled,
+} from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 
 export default function Navigation({
   navigationExpanded,
   setNavigationExpanded,
+  activeNav,
+  setActiveNav,
 }) {
   const history = useHistory();
 
-  const [activeNav, setActiveNav] = useState(1);
-
   const navigation = [
-    { id: 1, title: "New Release", route: "/new-release" },
-    { id: 2, title: "Your Releases", route: "/your-releases" },
-    { id: 3, title: "Anaytics", route: "/analytics" },
+    {
+      id: 1,
+      title: "New Release",
+      icon: <PlusCircleFilled />,
+      route: "/new-release",
+    },
+    {
+      id: 2,
+      title: "Your Releases",
+      icon: <FolderFilled />,
+      route: "/my-releases",
+    },
+    {
+      id: 3,
+      title: "Anaytics",
+      icon: <FundFilled />,
+      route: "/analytics",
+    },
   ];
 
   const changeActiveNav = (id) => {
@@ -37,7 +57,7 @@ export default function Navigation({
           className="hamburger-icon"
           onClick={() => setNavigationExpanded(false)}
         >
-          <MenuOutlined></MenuOutlined>
+          <CloseOutlined />
         </div>
         <div className="logo-container">
           <img
@@ -54,7 +74,7 @@ export default function Navigation({
                 active={activeNav === n.id}
                 onClick={() => changeActiveNav(n.id)}
               >
-                {n.title}
+                {n.icon}&nbsp;&nbsp;{n.title}
               </NavButton>
             );
           })}

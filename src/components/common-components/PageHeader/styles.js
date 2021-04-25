@@ -3,7 +3,7 @@ import theme from "../../../styles/theme";
 
 export const PageHeaderWrapper = styled.div`
   position: relative;
-  width: calc(100% - 6rem);
+  width: 100%;
   height: 63px;
   background-color: ${theme.colors.surface};
   border-bottom: 1px solid ${theme.colors.textOnSurface}1D;
@@ -26,6 +26,6 @@ export const PageHeaderWrapper = styled.div`
       cursor: pointer;
     }
     padding: 0 1rem;
-    width: calc(100% - 2rem);
+    width: 100%;
   }
 `;

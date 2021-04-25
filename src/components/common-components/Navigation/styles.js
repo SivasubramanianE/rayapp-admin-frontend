@@ -63,9 +63,20 @@ export const NavigationWrapper = styled.div`
     .hamburger-icon {
       display: block;
       position: absolute;
-      top: 1rem;
+      top: 1.4rem;
       right: 1rem;
       cursor: pointer;
+    }
+
+    animation: slideIn 0.2s forwards;
+
+    @keyframes slideIn {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(0);
+      }
     }
   }
 `;

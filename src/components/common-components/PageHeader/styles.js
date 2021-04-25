@@ -21,7 +21,7 @@ export const PageHeaderWrapper = styled.div`
     .hamburger-icon {
       display: block;
       position: absolute;
-      top: 1rem;
+      top: 1.4rem;
       right: 1rem;
       cursor: pointer;
     }

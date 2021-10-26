@@ -7,41 +7,49 @@ import {
   PlusCircleFilled,
 } from "@ant-design/icons";
 import { useHistory, useLocation } from "react-router-dom";
+import { getLoggedInUser } from "../../../utils/auth";
+import { Avatar } from "antd";
+import routes from "../../../routes/routes";
 
 export default function Navigation({
   navigationExpanded,
   setNavigationExpanded,
   activeNav,
   setActiveNav,
+  setPageTitle,
 }) {
   const history = useHistory();
   const location = useLocation();
+
+  const user = getLoggedInUser();
 
   const navigation = [
     {
       id: 1,
       title: "New Release",
       icon: <PlusCircleFilled />,
-      route: "/new-release",
+      route: routes.newRelease,
     },
     {
       id: 2,
       title: "Your Releases",
       icon: <FolderFilled />,
-      route: "/my-releases",
+      route: routes.myReleases,
     },
     {
       id: 3,
       title: "Anaytics",
       icon: <FundFilled />,
-      route: "/analytics",
+      route: routes.analytics,
     },
   ];
 
   const changeActiveNav = (id) => {
+    if (location.pathname === "/") return;
     setActiveNav(id);
     let activeNavObject = navigation.find((n) => n.id === id);
     history.push(activeNavObject.route);
+    setPageTitle(activeNavObject.title);
 
     const mobileMedia = window.matchMedia("only screen and (max-width:960px)");
     const portraitMedia = window.matchMedia("(orientation: portrait)");
@@ -57,9 +65,14 @@ export default function Navigation({
 
     if (activeMenu) {
       setActiveNav(activeMenu.id);
+      setPageTitle(activeMenu.title);
     }
     //eslint-disable-next-line
   }, [location]);
+
+  useEffect(() => {
+    if (window.visualViewport.width < 960) setNavigationExpanded(false);
+  }, []);
 
   return navigationExpanded === true ? (
     <NavigationWrapper>
@@ -84,6 +97,7 @@ export default function Navigation({
               <NavButton
                 active={activeNav === n.id}
                 onClick={() => changeActiveNav(n.id)}
+                disabled={location.pathname === routes.root}
               >
                 {n.icon}&nbsp;&nbsp;{n.title}
               </NavButton>
@@ -91,6 +105,15 @@ export default function Navigation({
           })}
         </div>
       </div>
+      {user._id && (
+        <div className="user-details">
+          Logged in as
+          <Avatar src={user.display_picture} size={20} />
+          <span className="name">
+            {user.name.givenName} {user.name.familyName}
+          </span>
+        </div>
+      )}
     </NavigationWrapper>
   ) : null;
 }

@@ -6,7 +6,7 @@ export const NavigationWrapper = styled.div`
   height: 100%;
   background-color: ${theme.colors.surface};
   border-right: 1px solid ${theme.colors.textOnSurface}1D;
-  z-index: calc(${theme.baseZIndex} + 1);
+  z-index: calc(${theme.baseZIndex} + 5);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -81,6 +81,22 @@ export const NavigationWrapper = styled.div`
       }
     }
   }
+
+  .user-details {
+    position: absolute;
+    bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .ant-avatar {
+      margin: 0 6px;
+    }
+
+    .name {
+      font-weight: 500;
+    }
+  }
 `;
 
 export const NavButton = styled.div`
@@ -92,12 +108,23 @@ export const NavButton = styled.div`
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: all 0.1s ease-in-out;
+  user-select: none;
 
   font-weight: ${({ active }) => (active ? "bold" : "normal")};
-  color: ${({ active }) =>
-    active ? theme.colors.textOnAccent : theme.colors.textOnSurface};
+  color: ${({ active, disabled }) => {
+    if (disabled) return theme.colors.textOnSurface + "50";
+    if (active) return theme.colors.textOnAccent;
+    else return theme.colors.textOnSurface;
+  }};
   box-shadow: ${({ active }) =>
     active ? "-1px 2px 8px -1px rgba(0, 0, 0, 0.2)" : "none"};
-  background-color: ${({ active }) =>
-    active ? theme.colors.accent : "transparent"};
+  background-color: ${({ active, disabled }) => {
+    if (disabled) return "transparent";
+    if (active) return theme.colors.accent;
+    else return "transparent";
+  }};
+
+  :hover {
+    box-shadow: -1px 2px 8px -1px rgba(0, 0, 0, 0.2);
+  }
 `;

@@ -5,6 +5,7 @@ export const StepperFormWrapper = styled.div`
   height: 100%;
   width: 100%;
   padding: 3rem 10rem;
+  overflow-y: auto;
 
   .ant-steps-item-content {
     display: inline-flex;

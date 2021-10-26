@@ -5,12 +5,13 @@ import NewReleasepage from "./pages/NewRelease";
 import { Page, PageContent } from "./components/common-components/Page/styles";
 import PageHeader from "./components/common-components/PageHeader";
 import { useEffect, useState } from "react";
-import theme from "./styles/theme";
 import MyReleasesPage from "./pages/MyReleases";
+import LoginPage from "./pages/Login";
 
 function App() {
   const [navigationExpanded, setNavigationExpanded] = useState(true);
-  const [activeNav, setActiveNav] = useState(1);
+  const [activeNav, setActiveNav] = useState(0);
+  const [pageTitle, setPageTitle] = useState("");
 
   useEffect(() => {
     const mobileMedia = window.matchMedia("only screen and (max-width:960px)");
@@ -37,15 +38,17 @@ function App() {
           setNavigationExpanded={setNavigationExpanded}
           activeNav={activeNav}
           setActiveNav={setActiveNav}
+          setPageTitle={setPageTitle}
         ></Navigation>
-        <Page>
-          <PageHeader
-            setNavigationExpanded={setNavigationExpanded}
-          ></PageHeader>
-          <PageContent>
-            <Switch>
+        <Switch>
+          <Page>
+            <PageHeader
+              setNavigationExpanded={setNavigationExpanded}
+              pageTitle={pageTitle}
+            ></PageHeader>
+            <PageContent>
               <Route exact path="/">
-                <NewReleasepage />
+                <LoginPage setPageTitle={setPageTitle} />
               </Route>
               <Route exact path="/new-release">
                 <NewReleasepage />
@@ -53,9 +56,9 @@ function App() {
               <Route exact path="/my-releases">
                 <MyReleasesPage />
               </Route>
-            </Switch>
-          </PageContent>
-        </Page>
+            </PageContent>
+          </Page>
+        </Switch>
       </Router>
     </div>
   );

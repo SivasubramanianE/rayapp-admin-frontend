@@ -21,3 +21,8 @@ body,
   width: 100%;
   background-color: #fafafa;
 }
+
+.ant-select-selection-placeholder,
+.ant-select-selection-item {
+  line-height: 1.5rem !important;
+}

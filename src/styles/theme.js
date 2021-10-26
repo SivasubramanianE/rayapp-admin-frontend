@@ -10,6 +10,9 @@ const theme = {
   button: {
     borderRadius: "25px",
   },
+  container: {
+    borderRadius: "8px",
+  },
   media: {
     mobile: "@media only screen and (max-width:960px)",
     portrait: "@media (orientation: portrait)",

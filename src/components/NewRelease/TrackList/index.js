@@ -102,7 +102,6 @@ export default function TrackList() {
                   onFocus={onFocus}
                   onBlur={onBlur}
                   onSearch={onSearch}
-                  size="large"
                   filterOption={(input, option) =>
                     option.children
                       .toLowerCase()
@@ -130,7 +129,6 @@ export default function TrackList() {
                   onFocus={onFocus}
                   onBlur={onBlur}
                   onSearch={onSearch}
-                  size="large"
                   filterOption={(input, option) =>
                     option.children
                       .toLowerCase()

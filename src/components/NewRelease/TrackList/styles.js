@@ -20,6 +20,7 @@ export const TrackListWrapper = styled.div`
 
   .add-link {
     width: 100%;
+    margin: 12px 0;
     display: flex;
     align-items: center;
     justify-content: center;

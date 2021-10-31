@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Navigation from "./components/common-components/Navigation";
 import NewReleasepage from "./pages/NewRelease";
 import { Page, PageContent } from "./components/common-components/Page/styles";
@@ -18,7 +18,6 @@ function App() {
   const [pageTitle, setPageTitle] = useState("");
 
   useEffect(() => {
-
     const mobileMedia = window.matchMedia("only screen and (max-width:960px)");
     const portraitMedia = window.matchMedia("(orientation: portrait)");
 

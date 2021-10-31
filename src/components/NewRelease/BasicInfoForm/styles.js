@@ -11,6 +11,11 @@ export const BasicInfoFormWrapper = styled.div`
   .basic-info {
     flex: 1;
     padding: 0 2rem;
+
+    ${theme.media.mobile}, ${theme.media.portrait} {
+      width: 100%;
+      padding: 0;
+    }
   }
 
   .ant-upload.ant-upload-select-picture-card {

@@ -57,6 +57,7 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
       .finally(() => {
         setPageLoading(false);
       });
+    // eslint-disable-next-line
   }, []);
 
   const uploadButton = (
@@ -261,6 +262,7 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
             ]}
           >
             <StyledDatePicker
+              format="Do MMMM YYYY"
               disabledDate={function disabledDate(current) {
                 return current && current < moment().add(10, "days");
               }}

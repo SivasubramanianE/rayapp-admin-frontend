@@ -7,7 +7,7 @@ export const StyledSelect = styled(Select)`
   .ant-select-selector {
     display: flex !important;
     align-items: center !important;
-    height: 38px !important;
+    height: 40px !important;
     border-radius: 2rem !important;
     box-sizing: border-box !important;
   }

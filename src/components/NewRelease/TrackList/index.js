@@ -21,6 +21,7 @@ export default function TrackList({ albumId }) {
       setTracks(songs);
       console.log(songs);
     });
+    // eslint-disable-next-line
   }, []);
 
   const closeSongEditor = () => setSongEditVisible(false);

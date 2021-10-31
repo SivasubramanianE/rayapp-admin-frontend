@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { NavButton, NavigationWrapper } from "./styles";
 import {
   CloseOutlined,
@@ -8,7 +8,6 @@ import {
 } from "@ant-design/icons";
 import { useHistory, useLocation } from "react-router-dom";
 import { getLoggedInUser } from "../../../utils/auth";
-import { Avatar } from "antd";
 import routes from "../../../routes/routes";
 
 export default function Navigation({
@@ -72,6 +71,7 @@ export default function Navigation({
 
   useEffect(() => {
     if (window.visualViewport.width < 960) setNavigationExpanded(false);
+    // eslint-disable-next-line
   }, []);
 
   return navigationExpanded === true ? (

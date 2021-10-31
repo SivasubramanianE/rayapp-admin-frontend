@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { PrimaryButton } from "../common-components/PrimaryButton/styles";
 import { LoginWrapper } from "./styles";
-import { API_URL } from "../../utils/url";
 import { useHistory } from "react-router-dom";
 import { isLoggedIn } from "../../utils/auth";
 import Cookies from "universal-cookie";

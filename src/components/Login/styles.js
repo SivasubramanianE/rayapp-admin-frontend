@@ -60,4 +60,9 @@ export const LoginWrapper = styled.div`
       margin: 4px 0;
     }
   }
+
+  .input-wrapper {
+    margin: 4px 0;
+    width: 100%;
+  }
 `;

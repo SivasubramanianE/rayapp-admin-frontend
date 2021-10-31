@@ -1,31 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { PrimaryButton } from "../common-components/PrimaryButton/styles";
 import { LoginWrapper } from "./styles";
-import gIcon from "../../assets/G_icon.svg";
 import { API_URL } from "../../utils/url";
 import { useHistory } from "react-router-dom";
 import { isLoggedIn } from "../../utils/auth";
 import Cookies from "universal-cookie";
 import routes from "../../routes/routes";
+import {
+  StyledInput,
+  StyledPasswordInput,
+} from "../common-components/Input/styles";
+import axios from "axios";
 
 export default function Login() {
-  const openLogin = () =>
-    (window.location.href = API_URL + "/rest/v1/auth/google");
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const login = () =>
+    axios
+      .post("/users/login", {
+        email: emailRef.current,
+        password: passwordRef.current,
+      })
+      .then((response) => {
+        let data = response.data.data;
+        const userData = data.userInfo;
+        const token = data.accessToken;
+
+        setAuthCookies(token, userData);
+        return history.push(routes.newRelease);
+      });
+
+  const onEmailChange = (e) => (emailRef.current = e.target.value);
+  const onPasswordChange = (e) => (passwordRef.current = e.target.value);
 
   const history = useHistory();
   const cookies = new Cookies();
-
-  const windowUrl = window.location.search;
-  const params = new URLSearchParams(windowUrl);
-  //API reponse parameters
-  const status = params.get("status");
-  const userData = JSON.parse(params.get("user_data"));
-  const token = params.get("token");
-
-  const loginSuccess = () => {
-    setAuthCookies(token, userData);
-    return history.push(routes.newRelease);
-  };
 
   const redirectToReleases = () => history.push(routes.newRelease);
 
@@ -40,23 +49,17 @@ export default function Login() {
     cookies.set("SSID", token, options);
     cookies.set("userId", user._id, options);
     cookies.set("userEmail", user.email, options);
-    cookies.set("userGivenName", user.name.givenName, options);
-    cookies.set("userFamilyName", user.name.familyName, options);
-    cookies.set("userDisplayPicture", user.display_picture, options);
+    cookies.set("userName", user.name, options);
   };
 
   useEffect(() => {
-    if (status === "SUCCESS") return loginSuccess();
-
     if (isLoggedIn()) {
       return redirectToReleases();
     } else {
       cookies.remove("SSID");
       cookies.remove("userId");
       cookies.remove("userEmail");
-      cookies.remove("userGivenName");
-      cookies.remove("userFamilyName");
-      cookies.remove("userDisplayPicture");
+      cookies.remove("userName");
 
       history.push(routes.root);
     }
@@ -74,10 +77,20 @@ export default function Login() {
           className="logo"
         ></img>
         Release Hub
-        <PrimaryButton onClick={openLogin}>
-          <img alt="google login" className="g-icon" src={gIcon}></img>Login
-          with Google
-        </PrimaryButton>
+        <div className="input-wrapper">
+          <StyledInput
+            type="email"
+            onChange={onEmailChange}
+            placeholder="E-Mail"
+          ></StyledInput>
+        </div>
+        <div className="input-wrapper" type="password">
+          <StyledPasswordInput
+            onChange={onPasswordChange}
+            placeholder="Password"
+          ></StyledPasswordInput>
+        </div>
+        <PrimaryButton onClick={login}>Login</PrimaryButton>
         <div className="login-text">Please login to continue</div>
       </div>
     </LoginWrapper>

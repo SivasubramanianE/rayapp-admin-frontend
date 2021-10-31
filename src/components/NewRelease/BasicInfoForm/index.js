@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BasicInfoFormWrapper } from "./styles";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Form, Button, DatePicker, Upload, message } from "antd";
@@ -6,6 +6,10 @@ import { Form, Button, DatePicker, Upload, message } from "antd";
 import { StyledInput } from "../../common-components/Input/styles";
 import { StyledDatePicker } from "../../common-components/Datepicker/styles";
 import { PrimaryButton } from "../../common-components/PrimaryButton/styles";
+import axios from "axios";
+import moment from "moment";
+import { StyledSelect } from "../../common-components/Select/styles";
+import { Option } from "antd/lib/mentions";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -25,9 +29,34 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 
-export default function BasicInfoForm({ nextStep }) {
+export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [imageUrl, setImageUrl] = useState(null);
+  const [album, setAlbum] = useState({});
+
+  const getDraftAlbums = () =>
+    axios.get("/albums", { params: { status: "Draft" } });
+
+  useEffect(() => {
+    setPageLoading(true);
+    getDraftAlbums()
+      .then((response) => {
+        const albums = response.data.data;
+
+        if (albums.length) {
+          // There can only be one Draft at any given time.
+          const responseAlbum = albums[0];
+          if (!albumId) {
+            setAlbumId(responseAlbum._id);
+          }
+          setAlbum(responseAlbum);
+        }
+      })
+      .finally(() => {
+        setPageLoading(false);
+      });
+  }, []);
 
   const uploadButton = (
     <div>
@@ -74,6 +103,10 @@ export default function BasicInfoForm({ nextStep }) {
     console.log("Failed:", errorInfo);
   };
 
+  if (pageLoading) {
+    return null;
+  }
+
   return (
     <BasicInfoFormWrapper>
       <div>
@@ -101,14 +134,18 @@ export default function BasicInfoForm({ nextStep }) {
           layout="vertical"
           className="w-100"
           initialValues={{
-            remember: true,
+            title: album.title,
+            primaryArtist: album.primaryArtist,
+            mainGenre: album.mainGenre,
+            subGenre: album.subGenre,
+            language: album.language,
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
           <Form.Item
             label="Name of the Release :"
-            name="username"
+            name="title"
             rules={[
               {
                 required: true,
@@ -121,7 +158,7 @@ export default function BasicInfoForm({ nextStep }) {
 
           <Form.Item
             label="Primary Artist :"
-            name="Primary Artist"
+            name="primaryArtist"
             rules={[
               {
                 required: true,
@@ -138,7 +175,7 @@ export default function BasicInfoForm({ nextStep }) {
 
           <Form.Item
             label="Language of release :"
-            name="Language of release"
+            name="language"
             rules={[
               {
                 required: true,
@@ -153,7 +190,7 @@ export default function BasicInfoForm({ nextStep }) {
             <div className="left">
               <Form.Item
                 label="Main Genre :"
-                name="Main Genre"
+                name="mainGenre"
                 rules={[
                   {
                     required: true,
@@ -161,13 +198,27 @@ export default function BasicInfoForm({ nextStep }) {
                   },
                 ]}
               >
-                <StyledInput />
+                <StyledSelect
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="Select a person"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  <Option value="jack">Pop</Option>
+                  <Option value="lucy">Rock</Option>
+                  <Option value="tom">Pop</Option>
+                </StyledSelect>
               </Form.Item>
             </div>
             <div className="right">
               <Form.Item
                 label="Sub Genre :"
-                name="Sub Genre"
+                name="subGenre"
                 rules={[
                   {
                     required: true,
@@ -175,14 +226,28 @@ export default function BasicInfoForm({ nextStep }) {
                   },
                 ]}
               >
-                <StyledInput />
+                <StyledSelect
+                  showSearch
+                  style={{ width: 200 }}
+                  placeholder="Select a person"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  <Option value="jack">Pop</Option>
+                  <Option value="lucy">Rock</Option>
+                  <Option value="tom">Pop</Option>
+                </StyledSelect>
               </Form.Item>
             </div>
           </div>
 
           <Form.Item
             label="Release Date :"
-            name="Release Date"
+            name="releaseDate"
             rules={[
               {
                 required: true,
@@ -190,7 +255,11 @@ export default function BasicInfoForm({ nextStep }) {
               },
             ]}
           >
-            <StyledDatePicker />
+            <StyledDatePicker
+              disabledDate={function disabledDate(current) {
+                return current && current < moment().add(7, "days");
+              }}
+            />
           </Form.Item>
 
           <Form.Item {...tailLayout}>

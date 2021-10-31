@@ -24,6 +24,7 @@ const steps = [
 
 export default function NewRelease() {
   const [current, setCurrent] = React.useState(0);
+  const [albumId, setAlbumId] = React.useState(null);
 
   const next = () => {
     setCurrent(current + 1);
@@ -41,8 +42,14 @@ export default function NewRelease() {
         ))}
       </Steps>
       <div className="steps-content">
-        {current === 0 && <BasicInfoForm nextStep={next} />}
-        {current === 1 && <TrackList />}
+        {current === 0 && (
+          <BasicInfoForm
+            nextStep={next}
+            albumId={albumId}
+            setAlbumId={setAlbumId}
+          />
+        )}
+        {current === 1 && <TrackList albumId={albumId} />}
       </div>
       <div className="steps-action">
         {current > 0 && (

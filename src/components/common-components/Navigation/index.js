@@ -108,10 +108,7 @@ export default function Navigation({
       {user._id && (
         <div className="user-details">
           Logged in as
-          <Avatar src={user.display_picture} size={20} />
-          <span className="name">
-            {user.name.givenName} {user.name.familyName}
-          </span>
+          <span className="name">&nbsp;{user.name}</span>
         </div>
       )}
     </NavigationWrapper>

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Drawer, Form, List, Row, Select } from "antd";
 import { TrackListWrapper } from "./styles";
 import { PrimaryButton } from "../../common-components/PrimaryButton/styles";
 import { StyledInput } from "../../common-components/Input/styles";
 import { StyledSelect } from "../../common-components/Select/styles";
+import axios from "axios";
 
 const data = [
   "Racing car sprays burning fuel into crowd.",
@@ -13,8 +14,21 @@ const data = [
   "Los Angeles battles huge wildfires.",
 ];
 
-export default function TrackList() {
+export default function TrackList({ albumId }) {
   const [songEditVisible, setSongEditVisible] = useState(false);
+  const [tracks, setTracks] = useState(null);
+
+  const getAlbumSongs = () => {
+    return axios.get("/songs", { params: { albumId } });
+  };
+
+  useEffect(() => {
+    getAlbumSongs().then((response) => {
+      const songs = response.data.data;
+      setTracks(songs);
+      console.log(songs);
+    });
+  }, []);
 
   const closeSongEditor = () => setSongEditVisible(false);
 

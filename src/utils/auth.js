@@ -10,9 +10,7 @@ export const isLoggedIn = () => {
     loggedIn = true;
 
   if (loggedIn === true) {
-    axios.defaults.headers.common["Authorization"] =
-      "Bearer " + cookies.get("SSID");
-    axios.defaults.headers.common["x-cm-user-id"] = cookies.get("userId");
+    axios.defaults.headers.common["Authorization"] = cookies.get("SSID");
   }
 
   return loggedIn;
@@ -23,10 +21,7 @@ export const getLoggedInUser = () => {
 
   const user = {
     _id: cookies.get("userId"),
-    name: {
-      givenName: cookies.get("userGivenName"),
-      familyName: cookies.get("userFamilyName"),
-    },
+    name: cookies.get("userName"),
     email: cookies.get("userEmail"),
     display_picture: cookies.get("userDisplayPicture"),
   };

@@ -7,6 +7,10 @@ import PageHeader from "./components/common-components/PageHeader";
 import { useEffect, useState } from "react";
 import MyReleasesPage from "./pages/MyReleases";
 import LoginPage from "./pages/Login";
+import axios from "axios";
+import { API_URL } from "./utils/url";
+
+axios.defaults.baseURL = API_URL;
 
 function App() {
   const [navigationExpanded, setNavigationExpanded] = useState(true);
@@ -14,6 +18,7 @@ function App() {
   const [pageTitle, setPageTitle] = useState("");
 
   useEffect(() => {
+
     const mobileMedia = window.matchMedia("only screen and (max-width:960px)");
     const portraitMedia = window.matchMedia("(orientation: portrait)");
 

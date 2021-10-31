@@ -5,18 +5,11 @@ import { PrimaryButton } from "../../common-components/PrimaryButton/styles";
 import { StyledInput } from "../../common-components/Input/styles";
 import { StyledSelect } from "../../common-components/Select/styles";
 import axios from "axios";
-
-const data = [
-  "Racing car sprays burning fuel into crowd.",
-  "Japanese princess to wed commoner.",
-  "Australian walks 100km after outback crash.",
-  "Man charged over missing wedding girl.",
-  "Los Angeles battles huge wildfires.",
-];
+import { genreList } from "../../../utils/genres";
 
 export default function TrackList({ albumId }) {
   const [songEditVisible, setSongEditVisible] = useState(false);
-  const [tracks, setTracks] = useState(null);
+  const [tracks, setTracks] = useState([]);
 
   const getAlbumSongs = () => {
     return axios.get("/songs", { params: { albumId } });
@@ -110,7 +103,7 @@ export default function TrackList({ albumId }) {
                 <StyledSelect
                   showSearch
                   style={{ width: 200 }}
-                  placeholder="Select a person"
+                  placeholder="Select a genre"
                   optionFilterProp="children"
                   onChange={onChange}
                   onFocus={onFocus}
@@ -122,9 +115,9 @@ export default function TrackList({ albumId }) {
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  <Option value="jack">Pop</Option>
-                  <Option value="lucy">Rock</Option>
-                  <Option value="tom">Pop</Option>
+                  {genreList.map((genre) => (
+                    <Option value={genre}>{genre}</Option>
+                  ))}
                 </StyledSelect>
               </Form.Item>
             </Col>
@@ -137,7 +130,7 @@ export default function TrackList({ albumId }) {
                 <StyledSelect
                   showSearch
                   style={{ width: 200 }}
-                  placeholder="Select a person"
+                  placeholder="Select a genre"
                   optionFilterProp="children"
                   onChange={onChange}
                   onFocus={onFocus}
@@ -149,9 +142,9 @@ export default function TrackList({ albumId }) {
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  <Option value="jack">Pop</Option>
-                  <Option value="lucy">Rock</Option>
-                  <Option value="tom">Pop</Option>
+                  {genreList.map((genre) => (
+                    <Option value={genre}>{genre}</Option>
+                  ))}
                 </StyledSelect>
               </Form.Item>
             </Col>
@@ -161,15 +154,20 @@ export default function TrackList({ albumId }) {
       <TrackListWrapper>
         <List
           size="large"
-          dataSource={data}
-          renderItem={(item) => (
+          dataSource={tracks}
+          renderItem={(track) => (
             <List.Item
-              actions={[<a onClick={openSongEditor}>Edit Track Info</a>]}
+              actions={[
+                <span className="edit-link" onClick={openSongEditor}>
+                  Edit Track Info
+                </span>,
+              ]}
             >
-              {item}
+              {track.title}
             </List.Item>
           )}
         />
+        <div className="add-link">+ Add Track</div>
       </TrackListWrapper>
     </>
   );

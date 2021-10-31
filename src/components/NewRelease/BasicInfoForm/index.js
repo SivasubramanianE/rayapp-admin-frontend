@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BasicInfoFormWrapper } from "./styles";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Form, Button, DatePicker, Upload, message } from "antd";
+import { Form, Upload, message } from "antd";
 
 import { StyledInput } from "../../common-components/Input/styles";
 import { StyledDatePicker } from "../../common-components/Datepicker/styles";
@@ -10,6 +10,7 @@ import axios from "axios";
 import moment from "moment";
 import { StyledSelect } from "../../common-components/Select/styles";
 import { Option } from "antd/lib/mentions";
+import { genreList } from "../../../utils/genres";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -136,9 +137,13 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
           initialValues={{
             title: album.title,
             primaryArtist: album.primaryArtist,
+            secondaryArtist: album.secondaryArtist,
             mainGenre: album.mainGenre,
             subGenre: album.subGenre,
             language: album.language,
+            releaseDate: album.releaseDate
+              ? moment(album.releaseDate)
+              : moment().add(11, "days"),
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -201,7 +206,7 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
                 <StyledSelect
                   showSearch
                   style={{ width: 200 }}
-                  placeholder="Select a person"
+                  placeholder="Select a genre"
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     option.children
@@ -209,9 +214,9 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  <Option value="jack">Pop</Option>
-                  <Option value="lucy">Rock</Option>
-                  <Option value="tom">Pop</Option>
+                  {genreList.map((genre) => (
+                    <Option value={genre}>{genre}</Option>
+                  ))}
                 </StyledSelect>
               </Form.Item>
             </div>
@@ -229,7 +234,7 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
                 <StyledSelect
                   showSearch
                   style={{ width: 200 }}
-                  placeholder="Select a person"
+                  placeholder="Select a genre"
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     option.children
@@ -237,9 +242,9 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  <Option value="jack">Pop</Option>
-                  <Option value="lucy">Rock</Option>
-                  <Option value="tom">Pop</Option>
+                  {genreList.map((genre) => (
+                    <Option value={genre}>{genre}</Option>
+                  ))}
                 </StyledSelect>
               </Form.Item>
             </div>
@@ -257,7 +262,7 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
           >
             <StyledDatePicker
               disabledDate={function disabledDate(current) {
-                return current && current < moment().add(7, "days");
+                return current && current < moment().add(10, "days");
               }}
             />
           </Form.Item>

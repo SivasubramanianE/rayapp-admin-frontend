@@ -34,8 +34,16 @@ function beforeUpload(file) {
 export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-  const [album, setAlbum] = useState({});
+  const [album, setAlbum] = useState({
+    title: null,
+    primaryArtist: null,
+    language: null,
+    mainGenre: null,
+    subGenre: null,
+    releaseDate: null,
+  });
 
   const getDraftAlbums = () =>
     axios.get("/albums", { params: { status: "Draft" } });
@@ -99,7 +107,18 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
 
   const onFinish = (values) => {
     console.log("Success:", values);
-    nextStep();
+    values.releaseDate = values.releaseDate.toISOString();
+    setSubmitting(true);
+    axios
+      .put("/albums", { body: values })
+      .then(() => {
+        console.log("Album updated");
+        nextStep();
+      })
+      .finally(() => {
+        setSubmitting(false);
+        nextStep();
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -277,10 +296,12 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
           <Form.Item {...tailLayout}>
             <PrimaryButton
               type="primary"
-              /* htmlType="submit" */ className="submit-btn"
-              onClick={nextStep}
+              htmlType="submit"
+              className="submit-btn"
+              disabled={submitting}
+              /* onClick={nextStep} */
             >
-              Next
+              {submitting ? "Saving" : "Next"}
             </PrimaryButton>
           </Form.Item>
         </Form>

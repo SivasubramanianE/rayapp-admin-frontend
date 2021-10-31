@@ -11,6 +11,7 @@ import moment from "moment";
 import { StyledSelect } from "../../common-components/Select/styles";
 import { Option } from "antd/lib/mentions";
 import { genreList } from "../../../utils/genres";
+import Loader from "../../common-components/Loader";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -106,7 +107,11 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
   };
 
   if (pageLoading) {
-    return null;
+    return (
+      <BasicInfoFormWrapper>
+        <Loader />
+      </BasicInfoFormWrapper>
+    );
   }
 
   return (

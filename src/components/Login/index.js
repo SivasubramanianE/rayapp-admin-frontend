@@ -75,7 +75,7 @@ export default function Login() {
           alt="RayApp Release"
           className="logo"
         ></img>
-        Release Hub
+        Release Hubᴮᴱᵀᴬ
         <div className="input-wrapper">
           <StyledInput
             type="email"

@@ -88,7 +88,7 @@ export default function Navigation({
             src="https://www.rayapprelease.com/static/media/LogoHeader.b52f2b32.png"
             alt="RayApp Release"
           ></img>
-          <div className="logo-text">Release Hub</div>
+          <div className="logo-text">Release Hubᴮᴱᵀᴬ</div>
         </div>
 
         <div className="button-wrapper">

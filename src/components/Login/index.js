@@ -26,7 +26,7 @@ export default function Login() {
         const token = data.accessToken;
 
         setAuthCookies(token, userData);
-        return history.push(routes.newRelease);
+        return redirectToReleases();
       });
 
   const onEmailChange = (e) => (emailRef.current = e.target.value);
@@ -35,7 +35,7 @@ export default function Login() {
   const history = useHistory();
   const cookies = new Cookies();
 
-  const redirectToReleases = () => history.push(routes.newRelease);
+  const redirectToReleases = () => history.push(routes.myReleases);
 
   const setAuthCookies = (token, user) => {
     let now = new Date();

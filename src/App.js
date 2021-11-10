@@ -9,6 +9,7 @@ import MyReleasesPage from "./pages/MyReleases";
 import LoginPage from "./pages/Login";
 import axios from "axios";
 import { API_URL } from "./utils/url";
+import routes from "./routes/routes";
 
 axios.defaults.baseURL = API_URL;
 
@@ -54,10 +55,13 @@ function App() {
               <Route exact path="/">
                 <LoginPage setPageTitle={setPageTitle} />
               </Route>
-              <Route exact path="/new-release">
+              <Route exact path={routes.newRelease}>
                 <NewReleasepage />
               </Route>
-              <Route exact path="/my-releases">
+              <Route exact path={routes.editRelease + "/:releaseId"}>
+                <NewReleasepage />
+              </Route>
+              <Route exact path={routes.myReleases}>
                 <MyReleasesPage />
               </Route>
             </PageContent>

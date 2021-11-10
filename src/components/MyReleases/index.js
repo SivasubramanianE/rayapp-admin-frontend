@@ -1,132 +1,130 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MyReleasesWrapper } from "./styles";
 import { Table } from "antd";
-import Avatar from "antd/lib/avatar/avatar";
+import axios from "axios";
+import moment from "moment";
+import Loader from "../common-components/Loader";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  FileDoneOutlined,
+  FormOutlined,
+  RollbackOutlined,
+  UploadOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
+import routes from "../../routes/routes";
+import { useHistory } from "react-router";
 
-const columns = [
-  {
-    title: "Release Title",
-    dataIndex: "release_title",
-    render: (text) => (
-      <div className="release-meta">
-        <Avatar
-          size="large"
-          src={"https://picsum.photos/200/300?random=" + Math.random()}
-        ></Avatar>
-        <div className="release-title">{text}</div>
-      </div>
-    ),
-  },
-  { title: "Primary Artist", render: () => "Shrihari Prakash" },
-  {
-    title: "Release Date",
-    dataIndex: "release_date",
-  },
-  {
-    title: "status",
-    dataIndex: "status",
-  },
-];
+const getStatusIcon = (status) => {
+  switch (status) {
+    case "Draft":
+      return <FormOutlined />;
+    case "Submitted":
+      return <UploadOutlined />;
+    case "Approved":
+      return <FileDoneOutlined />;
+    case "Released":
+      return <CheckCircleOutlined />;
+    case "Rejected":
+      return <CloseCircleOutlined />;
+    case "ReSubmitted":
+      return <RollbackOutlined />;
 
-const data = [
-  {
-    key: "1",
-    release_title: "Anda Urutti",
-    release_date: "1-1-2021",
-    status: "Removed",
-  },
-  {
-    key: "2",
-    release_title: "Idhayathile",
-    release_date: "1-1-2021",
-    status: "Published",
-  },
-  {
-    key: "3",
-    release_title: "82 D'Block",
-    release_date: "1-1-2021",
-    status: "Awaiting Review",
-  },
-  {
-    key: "4",
-    release_title: "Anda Urutti",
-    release_date: "1-1-2021",
-    status: "Removed",
-  },
-  {
-    key: "5",
-    release_title: "Idhayathile",
-    release_date: "1-1-2021",
-    status: "Published",
-  },
-  {
-    key: "6",
-    release_title: "82 D'Block",
-    release_date: "1-1-2021",
-    status: "Awaiting Review",
-  },
-  {
-    key: "7",
-    release_title: "Anda Urutti",
-    release_date: "1-1-2021",
-    status: "Removed",
-  },
-  {
-    key: "8",
-    release_title: "Idhayathile",
-    release_date: "1-1-2021",
-    status: "Published",
-  },
-  {
-    key: "9",
-    release_title: "82 D'Block",
-    release_date: "1-1-2021",
-    status: "Awaiting Review",
-  },
-  {
-    key: "10",
-    release_title: "Anda Urutti",
-    release_date: "1-1-2021",
-    status: "Removed",
-  },
-  {
-    key: "11",
-    release_title: "Idhayathile",
-    release_date: "1-1-2021",
-    status: "Published",
-  },
-  {
-    key: "12",
-    release_title: "82 D'Block",
-    release_date: "1-1-2021",
-    status: "Awaiting Review",
-  },
-  {
-    key: "13",
-    release_title: "Anda Urutti",
-    release_date: "1-1-2021",
-    status: "Removed",
-  },
-  {
-    key: "14",
-    release_title: "Idhayathile",
-    release_date: "1-1-2021",
-    status: "Published",
-  },
-  {
-    key: "15",
-    release_title: "82 D'Block",
-    release_date: "1-1-2021",
-    status: "Awaiting Review",
-  },
-];
+    default:
+      return null;
+  }
+};
 
 export default function MyReleases() {
+  const [pageLoading, setPageLoading] = useState(true);
+  const [releaseList, setReleaseList] = useState([]);
+
+  const history = useHistory();
+
+  const getDraftAlbums = () =>
+    axios.get("/albums", { params: { status: "Draft" } });
+
+  useEffect(() => {
+    setPageLoading(true);
+    getDraftAlbums()
+      .then((response) => {
+        const albums = response.data.data;
+
+        if (albums.length) {
+          setReleaseList(albums);
+        }
+      })
+      .finally(() => {
+        setPageLoading(false);
+      });
+    // eslint-disable-next-line
+  }, []);
+
+  const editAlbum = (album) => {
+    history.push(routes.editRelease + "/" + album._id);
+  };
+
+  const columns = [
+    {
+      title: "Release Title",
+      dataIndex: "title",
+      render: (text) => (
+        <div className="release-meta">
+          <div className="release-title">{text}</div>
+        </div>
+      ),
+    },
+    {
+      title: "Primary Artist",
+      dataIndex: "primaryArtist",
+      render: (primaryArtist) => primaryArtist,
+    },
+    {
+      title: "Release Date",
+      dataIndex: "releaseDate",
+      render: (releaseDate) => moment(releaseDate).format("MMMM Do YYYY"),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (status) => (
+        <div>
+          {getStatusIcon(status)}
+          &nbsp;{status}
+        </div>
+      ),
+    },
+    {
+      title: "Actions",
+      render: (album) => (
+        <div className="release-actions">
+          <div className="action-button">
+            {album.status === "Draft" || album.status === "ReSubmitted" ? (
+              <span onClick={() => editAlbum(album)}>
+                <EditOutlined />
+                &nbsp;Edit
+              </span>
+            ) : null}
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  if (pageLoading) {
+    return (
+      <MyReleasesWrapper>
+        <Loader />
+      </MyReleasesWrapper>
+    );
+  }
+
   return (
     <MyReleasesWrapper>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={releaseList}
         pagination={{ pageSize: 10 }}
         scroll={{ x: 960 }}
       />

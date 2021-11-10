@@ -25,15 +25,15 @@ export default function Navigation({
   const navigation = [
     {
       id: 1,
-      title: "New Release",
-      icon: <PlusCircleFilled />,
-      route: routes.newRelease,
-    },
-    {
-      id: 2,
       title: "Your Releases",
       icon: <FolderFilled />,
       route: routes.myReleases,
+    },
+    {
+      id: 2,
+      title: "New Release",
+      icon: <PlusCircleFilled />,
+      route: routes.newRelease,
     },
     {
       id: 3,

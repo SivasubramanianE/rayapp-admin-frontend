@@ -24,6 +24,14 @@ export const MyReleasesWrapper = styled.div`
     }
   }
 
+  .release-actions {
+    .action-button {
+      display: inline-block;
+      color: ${theme.colors.accent};
+      cursor: pointer;
+    }
+  }
+
   ${theme.media.mobile}, ${theme.media.portrait} {
     .ant-table-cell {
       font-size: small;

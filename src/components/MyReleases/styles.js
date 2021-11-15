@@ -29,6 +29,11 @@ export const MyReleasesWrapper = styled.div`
       display: inline-block;
       color: ${theme.colors.accent};
       cursor: pointer;
+      margin: 0 4px;
+    }
+
+    .danger {
+      color: red;
     }
   }
 

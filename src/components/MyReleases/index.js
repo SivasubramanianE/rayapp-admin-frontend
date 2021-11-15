@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MyReleasesWrapper } from "./styles";
-import { Table } from "antd";
+import { notification, Table } from "antd";
 import axios from "axios";
 import moment from "moment";
 import Loader from "../common-components/Loader";
@@ -12,6 +12,7 @@ import {
   RollbackOutlined,
   UploadOutlined,
   EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import routes from "../../routes/routes";
 import { useHistory } from "react-router";
@@ -64,6 +65,24 @@ export default function MyReleases() {
   const editAlbum = (album) => {
     history.push(routes.editRelease + "/" + album._id);
   };
+  const deleteAlbum = (album) => {
+    notification.info({
+      message: "Deleting album...",
+    });
+    axios
+      .delete("/albums/" + album._id)
+      .then(() => {
+        notification.success({
+          message: "Album deleted",
+        });
+        setReleaseList((rl) => rl.filter((r) => r._id !== album._id));
+      })
+      .catch(() => {
+        notification.error({
+          message: "Error deleting album",
+        });
+      });
+  };
 
   const columns = [
     {
@@ -106,6 +125,12 @@ export default function MyReleases() {
                 &nbsp;Edit
               </span>
             ) : null}
+          </div>
+          <div className="action-button danger">
+            <span onClick={() => deleteAlbum(album)}>
+              <DeleteOutlined />
+              &nbsp;Delete
+            </span>
           </div>
         </div>
       ),

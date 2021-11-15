@@ -31,7 +31,7 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 
-export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
+export default function BasicInfoForm({ nextStep, albumId }) {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -45,23 +45,15 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
     releaseDate: null,
   });
 
-  const getDraftAlbums = () =>
-    axios.get("/albums", { params: { status: "Draft" } });
+  const getAlbumDetails = () =>
+    axios.get("/albums/" + albumId, { params: { status: "Draft" } });
 
   useEffect(() => {
     setPageLoading(true);
-    getDraftAlbums()
+    getAlbumDetails()
       .then((response) => {
-        const albums = response.data.data;
-
-        if (albums.length) {
-          // There can only be one Draft at any given time.
-          const responseAlbum = albums[0];
-          if (!albumId) {
-            setAlbumId(responseAlbum._id);
-          }
-          setAlbum(responseAlbum);
-        }
+        const album = response.data.data;
+        setAlbum(album);
       })
       .finally(() => {
         setPageLoading(false);
@@ -108,9 +100,16 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
   const onFinish = (values) => {
     console.log("Success:", values);
     values.releaseDate = values.releaseDate.toISOString();
+
+    Object.keys(values).forEach((key) => {
+      if (values[key] === "") {
+        values[key] = "__delete__";
+      }
+    });
+
     setSubmitting(true);
     axios
-      .put("/albums", { body: values })
+      .patch("/albums/" + albumId, { ...values })
       .then(() => {
         console.log("Album updated");
         nextStep();
@@ -199,7 +198,7 @@ export default function BasicInfoForm({ nextStep, albumId, setAlbumId }) {
             <StyledInput />
           </Form.Item>
 
-          <Form.Item label="Secondary Artist :" name="Secondary Artist">
+          <Form.Item label="Secondary Artist :" name="secondaryArtist">
             <StyledInput />
           </Form.Item>
 

@@ -58,7 +58,7 @@ function App() {
               <Route exact path={routes.newRelease}>
                 <NewReleasepage />
               </Route>
-              <Route exact path={routes.editRelease + "/:releaseId"}>
+              <Route exact path={routes.editRelease + "/:albumId"}>
                 <NewReleasepage />
               </Route>
               <Route exact path={routes.myReleases}>

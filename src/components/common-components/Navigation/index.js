@@ -25,7 +25,7 @@ export default function Navigation({
   const navigation = [
     {
       id: 1,
-      title: "Your Releases",
+      title: "My Releases",
       icon: <FolderFilled />,
       route: routes.myReleases,
     },
@@ -40,13 +40,14 @@ export default function Navigation({
       title: "Anaytics",
       icon: <FundFilled />,
       route: routes.analytics,
+      disabled: true,
     },
   ];
 
-  const changeActiveNav = (id) => {
-    if (location.pathname === "/") return;
-    setActiveNav(id);
-    let activeNavObject = navigation.find((n) => n.id === id);
+  const changeActiveNav = (nav) => {
+    if (location.pathname === "/" || nav.disabled === true) return;
+    setActiveNav(nav.id);
+    let activeNavObject = navigation.find((n) => n.id === nav.id);
     history.push(activeNavObject.route);
     setPageTitle(activeNavObject.title);
 
@@ -96,8 +97,10 @@ export default function Navigation({
             return (
               <NavButton
                 active={activeNav === n.id}
-                onClick={() => changeActiveNav(n.id)}
-                disabled={location.pathname === routes.root}
+                onClick={() => changeActiveNav(n)}
+                disabled={
+                  location.pathname === routes.root || n.disabled === true
+                }
               >
                 {n.icon}&nbsp;&nbsp;{n.title}
               </NavButton>

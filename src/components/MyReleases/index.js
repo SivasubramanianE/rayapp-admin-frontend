@@ -43,8 +43,7 @@ export default function MyReleases() {
 
   const history = useHistory();
 
-  const getDraftAlbums = () =>
-    axios.get("/albums", { params: { status: "Draft" } });
+  const getDraftAlbums = () => axios.get("/albums");
 
   useEffect(() => {
     setPageLoading(true);
@@ -88,9 +87,15 @@ export default function MyReleases() {
     {
       title: "Release Title",
       dataIndex: "title",
-      render: (text) => (
+      render: (title) => (
         <div className="release-meta">
-          <div className="release-title">{text}</div>
+          <div className="release-title">
+            {title || (
+              <span>
+                <i>No information available</i>
+              </span>
+            )}
+          </div>
         </div>
       ),
     },
@@ -119,7 +124,7 @@ export default function MyReleases() {
       render: (album) => (
         <div className="release-actions">
           <div className="action-button">
-            {album.status === "Draft" || album.status === "ReSubmitted" ? (
+            {album.status === "Draft" || album.status === "Rejected" ? (
               <span onClick={() => editAlbum(album)}>
                 <EditOutlined />
                 &nbsp;Edit
@@ -127,10 +132,12 @@ export default function MyReleases() {
             ) : null}
           </div>
           <div className="action-button danger">
-            <span onClick={() => deleteAlbum(album)}>
-              <DeleteOutlined />
-              &nbsp;Delete
-            </span>
+            {(album.status === "Draft" || album.status === "Rejected") && (
+              <span onClick={() => deleteAlbum(album)}>
+                <DeleteOutlined />
+                &nbsp;Delete
+              </span>
+            )}
           </div>
         </div>
       ),

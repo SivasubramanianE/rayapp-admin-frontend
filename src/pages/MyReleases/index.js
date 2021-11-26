@@ -6,7 +6,7 @@ import routes from "../../routes/routes";
 import { isLoggedIn } from "../../utils/auth";
 
 export default function MyReleasesPage() {
-  useTitle("Your Releases");
+  useTitle("My Releases");
 
   const history = useHistory();
   if (!isLoggedIn()) {

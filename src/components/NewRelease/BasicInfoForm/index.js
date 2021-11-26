@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BasicInfoFormWrapper } from "./styles";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Form, Upload, message } from "antd";
+import { Form, Upload, message, notification } from "antd";
 
 import { StyledInput } from "../../common-components/Input/styles";
 import { StyledDatePicker } from "../../common-components/Datepicker/styles";
@@ -11,55 +11,12 @@ import moment from "moment";
 import { StyledSelect } from "../../common-components/Select/styles";
 import { Option } from "antd/lib/mentions";
 import { genreList } from "../../../utils/genres";
-import Loader from "../../common-components/Loader";
+import { isoLangs } from "../../../utils/languages";
+import { API_URL } from "../../../utils/url";
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 10;
-  if (!isLt2M) {
-    message.error("Image must smaller than 10MB!");
-  }
-  return isJpgOrPng && isLt2M;
-}
-
-export default function BasicInfoForm({ nextStep, albumId }) {
+export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
   const [loading, setLoading] = useState(false);
-  const [pageLoading, setPageLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [album, setAlbum] = useState({
-    title: null,
-    primaryArtist: null,
-    language: null,
-    mainGenre: null,
-    subGenre: null,
-    releaseDate: null,
-  });
-
-  const getAlbumDetails = () =>
-    axios.get("/albums/" + albumId, { params: { status: "Draft" } });
-
-  useEffect(() => {
-    setPageLoading(true);
-    getAlbumDetails()
-      .then((response) => {
-        const album = response.data.data;
-        setAlbum(album);
-      })
-      .finally(() => {
-        setPageLoading(false);
-      });
-    // eslint-disable-next-line
-  }, []);
 
   const uploadButton = (
     <div>
@@ -72,13 +29,6 @@ export default function BasicInfoForm({ nextStep, albumId }) {
     if (info.file.status === "uploading") {
       setLoading(true);
       return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (url) => {
-        setImageUrl(url);
-        setLoading(false);
-      });
     }
   };
 
@@ -98,11 +48,12 @@ export default function BasicInfoForm({ nextStep, albumId }) {
   };
 
   const onFinish = (values) => {
-    console.log("Success:", values);
+    console.log("Submit form", values);
     values.releaseDate = values.releaseDate.toISOString();
+    values.productionYear = values.productionYear.year();
 
     Object.keys(values).forEach((key) => {
-      if (values[key] === "") {
+      if (values[key] === "" || !values[key]) {
         values[key] = "__delete__";
       }
     });
@@ -112,11 +63,25 @@ export default function BasicInfoForm({ nextStep, albumId }) {
       .patch("/albums/" + albumId, { ...values })
       .then(() => {
         console.log("Album updated");
+        setAlbum((currentAlbum) => {
+          Object.keys(currentAlbum).forEach((key) => {
+            if (!values[key]) return;
+            if (values[key] === "__delete__") currentAlbum[key] = null;
+            else currentAlbum[key] = values[key];
+          });
+
+          return currentAlbum;
+        });
         nextStep();
+      })
+      .catch((error) => {
+        notification.error({
+          message: "Error editing album details.",
+          description: error.response.data.error,
+        });
       })
       .finally(() => {
         setSubmitting(false);
-        nextStep();
       });
   };
 
@@ -124,28 +89,62 @@ export default function BasicInfoForm({ nextStep, albumId }) {
     console.log("Failed:", errorInfo);
   };
 
-  if (pageLoading) {
-    return (
-      <BasicInfoFormWrapper>
-        <Loader />
-      </BasicInfoFormWrapper>
-    );
+  function beforeUpload(file) {
+    const isJpgOrPng = file.type === "image/jpeg";
+    if (!isJpgOrPng) {
+      return message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 10;
+    if (!isLt2M) {
+      return message.error("Image must smaller than 10MB!");
+    }
+    uploadAlbumArt(file);
+    return false;
   }
+
+  const uploadAlbumArt = (file) => {
+    const formData = new FormData();
+    formData.append("coverArtFile", file);
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+
+    setLoading(true);
+    axios
+      .put(API_URL + "/albums/" + albumId + "/cover", formData, config)
+      .then((response) => {
+        const data = response.data.data;
+        const newAlbum = { ...album };
+        newAlbum.artUrl = data.signedUrl + "&version=" + +new Date();
+        setAlbum(newAlbum);
+        setLoading(false);
+      });
+  };
 
   return (
     <BasicInfoFormWrapper>
       <div>
         <Upload
-          name="avatar"
+          name="coverArtFile"
           listType="picture-card"
-          className="avatar-uploader"
+          className="cover-art-uploader"
+          action={uploadAlbumArt}
           showUploadList={false}
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          onDrop={uploadAlbumArt}
           beforeUpload={beforeUpload}
           onChange={handleChange}
         >
-          {imageUrl ? (
-            <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+          {console.log(album)}
+          {album.artUrl !== null ? (
+            <img
+              src={album.artUrl}
+              alt="cover-art"
+              className="cover-art"
+              style={{ width: "100%" }}
+            />
           ) : (
             uploadButton
           )}
@@ -168,6 +167,11 @@ export default function BasicInfoForm({ nextStep, albumId }) {
             releaseDate: album.releaseDate
               ? moment(album.releaseDate)
               : moment().add(11, "days"),
+            productionYear: album.productionYear
+              ? moment({ year: album.productionYear })
+              : moment(),
+            label: album.label,
+            UPC: album.UPC,
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -212,7 +216,24 @@ export default function BasicInfoForm({ nextStep, albumId }) {
               },
             ]}
           >
-            <StyledInput />
+            <StyledSelect
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Select a language"
+              optionFilterProp="children"
+              filterOption={(input, option) => {
+                console.log(option);
+                return (
+                  option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                );
+              }}
+            >
+              {Object.values(isoLangs).map((language) => (
+                <Option value={language.name}>
+                  {language.name}({language.nativeName})
+                </Option>
+              ))}
+            </StyledSelect>
           </Form.Item>
 
           <div className="flex-row">
@@ -273,31 +294,77 @@ export default function BasicInfoForm({ nextStep, albumId }) {
               </Form.Item>
             </div>
           </div>
-
-          <Form.Item
-            label="Release Date :"
-            name="releaseDate"
-            rules={[
-              {
-                required: true,
-                message: "Release Date is Required!",
-              },
-            ]}
-          >
-            <StyledDatePicker
-              format="Do MMMM YYYY"
-              disabledDate={function disabledDate(current) {
-                return current && current < moment().add(10, "days");
-              }}
-            />
-          </Form.Item>
-
+          <div className="flex-row">
+            <div className="left">
+              <Form.Item
+                label="Release Date :"
+                name="releaseDate"
+                rules={[
+                  {
+                    required: true,
+                    message: "Release Date is Required!",
+                  },
+                ]}
+              >
+                <StyledDatePicker
+                  format="Do MMMM YYYY"
+                  disabledDate={function disabledDate(current) {
+                    return current && current < moment().add(10, "days");
+                  }}
+                />
+              </Form.Item>
+            </div>
+            <div className="right">
+              <Form.Item
+                label="Production Year :"
+                name="productionYear"
+                rules={[
+                  {
+                    required: true,
+                    message: "Production Year is Required!",
+                  },
+                ]}
+              >
+                <StyledDatePicker
+                  picker="year"
+                  disabledDate={function disabledDate(current) {
+                    return current && current > moment();
+                  }}
+                />
+              </Form.Item>
+            </div>
+          </div>
+          <div className="flex-row">
+            <div className="left">
+              <Form.Item
+                label="Production Name :"
+                name="label"
+                rules={[
+                  {
+                    required: true,
+                    message: "Release Date is Required!",
+                  },
+                ]}
+              >
+                <StyledInput />
+              </Form.Item>
+            </div>
+            <div className="right">
+              <Form.Item
+                label="UPC :"
+                name="UPC"
+                rules={[{ max: 13, message: "Please enter a valid UPC" }]}
+              >
+                <StyledInput />
+              </Form.Item>
+            </div>
+          </div>
           <Form.Item {...tailLayout}>
             <PrimaryButton
               type="primary"
               htmlType="submit"
               className="submit-btn"
-              disabled={submitting}
+              disabled={submitting || !album.artUrl}
               /* onClick={nextStep} */
             >
               {submitting ? "Saving" : "Next"}

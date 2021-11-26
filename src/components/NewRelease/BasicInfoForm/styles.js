@@ -32,6 +32,10 @@ export const BasicInfoFormWrapper = styled.div`
     transition: border-color 0.3s;
   }
 
+  .cover-art {
+    border-radius: 8px;
+  }
+
   .ant-form-item-control,
   .ant-form-item-label {
     max-width: unset;

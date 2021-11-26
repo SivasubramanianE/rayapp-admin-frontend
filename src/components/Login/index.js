@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PrimaryButton } from "../common-components/PrimaryButton/styles";
 import { LoginWrapper } from "./styles";
 import { useHistory } from "react-router-dom";
@@ -14,6 +14,7 @@ import axios from "axios";
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
+  const [loginError, setLoginError] = useState(null);
   const login = () =>
     axios
       .post("/users/login", {
@@ -27,6 +28,16 @@ export default function Login() {
 
         setAuthCookies(token, userData);
         return redirectToReleases();
+      })
+      .catch((error) => {
+        console.error(error.response);
+        if (error.response.data.error === "Unauthorized") {
+          setLoginError(
+            "Incorrect credentials, Please check your email and password"
+          );
+        } else {
+          setLoginError(error.response.data.error);
+        }
       });
 
   const onEmailChange = (e) => (emailRef.current = e.target.value);
@@ -39,7 +50,7 @@ export default function Login() {
 
   const setAuthCookies = (token, user) => {
     let now = new Date();
-    let expiry = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    let expiry = new Date(now.getTime() + 8 * 60 * 60 * 1000);
     let options = {
       path: "/",
       expires: expiry,
@@ -81,16 +92,20 @@ export default function Login() {
             type="email"
             onChange={onEmailChange}
             placeholder="E-Mail"
+            onPressEnter={login}
           ></StyledInput>
         </div>
         <div className="input-wrapper" type="password">
           <StyledPasswordInput
             onChange={onPasswordChange}
             placeholder="Password"
+            onPressEnter={login}
           ></StyledPasswordInput>
         </div>
         <PrimaryButton onClick={login}>Login</PrimaryButton>
-        <div className="login-text">Please login to continue</div>
+        <div className="login-text">
+          {loginError || "Please login to continue"}
+        </div>
       </div>
     </LoginWrapper>
   );

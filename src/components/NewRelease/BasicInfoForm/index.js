@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BasicInfoFormWrapper } from "./styles";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Form, Upload, message, notification } from "antd";
@@ -17,6 +17,25 @@ import { API_URL } from "../../../utils/url";
 export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const [form] = Form.useForm();
+
+  const getFormDefaults = (a) => ({
+    title: a.title,
+    primaryArtist: a.primaryArtist,
+    secondaryArtist: a.secondaryArtist,
+    mainGenre: a.mainGenre,
+    subGenre: a.subGenre,
+    language: a.language,
+    releaseDate: a.releaseDate
+      ? moment(a.releaseDate)
+      : moment().add(11, "days"),
+    productionYear: a.productionYear
+      ? moment({ year: a.productionYear })
+      : moment(),
+    label: a.label,
+    UPC: a.UPC,
+  });
 
   const uploadButton = (
     <div>
@@ -62,16 +81,15 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
     axios
       .patch("/albums/" + albumId, { ...values })
       .then(() => {
-        console.log("Album updated");
-        setAlbum((currentAlbum) => {
-          Object.keys(currentAlbum).forEach((key) => {
-            if (!values[key]) return;
-            if (values[key] === "__delete__") currentAlbum[key] = null;
-            else currentAlbum[key] = values[key];
-          });
-
-          return currentAlbum;
+        const newAlbum = { ...album };
+        Object.keys(newAlbum).forEach((key) => {
+          if (!values[key]) return;
+          if (values[key] === "__delete__") newAlbum[key] = null;
+          else newAlbum[key] = values[key];
         });
+
+        form.setFieldsValue(getFormDefaults(newAlbum));
+        setAlbum(newAlbum);
         nextStep();
       })
       .catch((error) => {
@@ -160,7 +178,6 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
           beforeUpload={beforeUpload}
           onChange={handleChange}
         >
-          {console.log(album)}
           {album.artUrl !== null && !loading ? (
             <img
               src={album.artUrl}
@@ -180,22 +197,8 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
           name="basic"
           layout="vertical"
           className="w-100"
-          initialValues={{
-            title: album.title,
-            primaryArtist: album.primaryArtist,
-            secondaryArtist: album.secondaryArtist,
-            mainGenre: album.mainGenre,
-            subGenre: album.subGenre,
-            language: album.language,
-            releaseDate: album.releaseDate
-              ? moment(album.releaseDate)
-              : moment().add(11, "days"),
-            productionYear: album.productionYear
-              ? moment({ year: album.productionYear })
-              : moment(),
-            label: album.label,
-            UPC: album.UPC,
-          }}
+          initialValues={getFormDefaults(album)}
+          form={form}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >

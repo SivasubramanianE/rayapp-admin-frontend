@@ -27,18 +27,25 @@ const steps = [
   },
 ];
 
+const albumSchema = {
+  title: null,
+  primaryArtist: null,
+  secondaryArtist: null,
+  language: null,
+  mainGenre: null,
+  subGenre: null,
+  releaseDate: null,
+  productionYear: null,
+  label: null,
+  UPC: null,
+  songs: [],
+};
+
 export default function NewRelease() {
   const [current, setCurrent] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
 
-  const [album, setAlbum] = useState({
-    title: null,
-    primaryArtist: null,
-    language: null,
-    mainGenre: null,
-    subGenre: null,
-    releaseDate: null,
-  });
+  const [album, setAlbum] = useState(albumSchema);
 
   const [tracks, setTracks] = useState([]);
 
@@ -56,9 +63,10 @@ export default function NewRelease() {
     setLoading(true);
     getAlbumDetails()
       .then((response) => {
-        const album = response.data.data;
+        let album = response.data.data;
         if (album.artUrl)
           album.artUrl = album.artUrl + "&version=" + +new Date();
+        if (album.title === undefined) album = { ...albumSchema, ...album };
         setAlbum(album);
         setTracks(album.songs);
       })

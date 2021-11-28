@@ -3,6 +3,18 @@
  * using wikipedia data
  */
 export const isoLangs = {
+  ta: {
+    name: "Tamil",
+    nativeName: "தமிழ்",
+  },
+  hi: {
+    name: "Hindi",
+    nativeName: "हिन्दी, हिंदी",
+  },
+  en: {
+    name: "English",
+    nativeName: "English",
+  },
   ab: {
     name: "Abkhaz",
     nativeName: "аҧсуа",
@@ -159,10 +171,6 @@ export const isoLangs = {
     name: "Dutch",
     nativeName: "Nederlands, Vlaams",
   },
-  en: {
-    name: "English",
-    nativeName: "English",
-  },
   eo: {
     name: "Esperanto",
     nativeName: "Esperanto",
@@ -234,10 +242,6 @@ export const isoLangs = {
   hz: {
     name: "Herero",
     nativeName: "Otjiherero",
-  },
-  hi: {
-    name: "Hindi",
-    nativeName: "हिन्दी, हिंदी",
   },
   ho: {
     name: "Hiri Motu",
@@ -610,10 +614,6 @@ export const isoLangs = {
   sv: {
     name: "Swedish",
     nativeName: "svenska",
-  },
-  ta: {
-    name: "Tamil",
-    nativeName: "தமிழ்",
   },
   te: {
     name: "Telugu",

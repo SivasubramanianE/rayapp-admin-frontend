@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Steps, message, notification } from "antd";
+import { Steps, notification } from "antd";
 import { StepperFormWrapper } from "./styles";
 import BasicInfoForm from "./BasicInfoForm";
 import TrackList from "./TrackList";
@@ -46,12 +46,13 @@ export default function NewRelease() {
 
   const { albumId } = useParams();
 
-  const getAlbumDetails = () =>
-    axios.get("/albums/" + albumId, { params: { status: "Draft" } });
+  const getAlbumDetails = () => axios.get("/albums/" + albumId);
 
   useEffect(() => console.log("album updated", album), [album]);
 
   useEffect(() => {
+    if (!albumId) return;
+
     setLoading(true);
     getAlbumDetails()
       .then((response) => {

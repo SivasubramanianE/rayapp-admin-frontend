@@ -89,20 +89,43 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
     console.log("Failed:", errorInfo);
   };
 
+  const checkImageDimensions = (file) => {
+    return new Promise((resolve) => {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        URL.revokeObjectURL(img.src);
+        if (img.width < 3000 || img.height < 3000 || img.width !== img.height)
+          return resolve(false);
+        return resolve(true);
+      };
+      img.src = url;
+    });
+  };
+
   function beforeUpload(file) {
-    const isJpgOrPng = file.type === "image/jpeg";
-    if (!isJpgOrPng) {
-      return message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 10;
-    if (!isLt2M) {
-      return message.error("Image must smaller than 10MB!");
-    }
     uploadAlbumArt(file);
     return false;
   }
 
-  const uploadAlbumArt = (file) => {
+  const uploadAlbumArt = async (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      return message.error("Please upload a JPG or PNG file");
+    }
+
+    const isLt10M = file.size / 1024 / 1024 < 10;
+    if (!isLt10M) {
+      return message.error("Image file must smaller than 10MB");
+    }
+
+    const dimensionsOk = await checkImageDimensions(file);
+
+    if (!dimensionsOk)
+      return message.error(
+        "Album art needs to be a square with minimum dimension of 3000px"
+      );
+
     const formData = new FormData();
     formData.append("coverArtFile", file);
 
@@ -120,8 +143,8 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
         const newAlbum = { ...album };
         newAlbum.artUrl = data.signedUrl + "&version=" + +new Date();
         setAlbum(newAlbum);
-        setLoading(false);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -138,7 +161,7 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
           onChange={handleChange}
         >
           {console.log(album)}
-          {album.artUrl !== null ? (
+          {album.artUrl !== null && !loading ? (
             <img
               src={album.artUrl}
               alt="cover-art"

@@ -233,6 +233,14 @@ export default function AllReleases() {
       sortDirections: ["descend", "ascend"],
     },
     {
+      title: "Label",
+      dataIndex: "label",
+      render: (label) => label,
+      ...getColumnSearchProps('label'),
+      sorter: (a, b) =>('' + a.label).localeCompare(b.label),
+      sortDirections: ['descend', 'ascend'],
+    },
+    {
       title: "Release Date",
       dataIndex: "releaseDate",
       ...getColumnSearchProps("releaseDate"),

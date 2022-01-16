@@ -29,7 +29,7 @@ export default function ViewRelease() {
   
     const { albumId } = useParams();
   
-    const getAlbumDetails = () => axios.get("/albums/" + albumId);
+    const getAlbumDetails = () => axios.get("admin/albums/" + albumId);
   
     useEffect(() => console.log("album updated", album), [album]);
   

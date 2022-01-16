@@ -60,6 +60,12 @@ export default function AlbumPreview({ album, tracks }) {
               </Descriptions.Item>
               <Descriptions.Item
                 span={2}
+                label={<div className="detail-label">Audio File</div>}
+              >
+                <audio controls src={track.masterUrl}></audio>
+              </Descriptions.Item>
+              <Descriptions.Item
+                span={2}
                 label={<div className="detail-label">Primary Artist</div>}
               >
                 {track.primaryArtist}

@@ -53,7 +53,7 @@ export default function NewRelease() {
 
   const { albumId } = useParams();
 
-  const getAlbumDetails = () => axios.get("/albums/" + albumId);
+  const getAlbumDetails = () => axios.get("/admin/albums/" + albumId);
 
   useEffect(() => console.log("album updated", album), [album]);
 
@@ -75,23 +75,6 @@ export default function NewRelease() {
       });
     // eslint-disable-next-line
   }, []);
-
-  const submitAlbum = () => {
-    axios
-      .patch("/albums/" + albumId + "/submit")
-      .then(() => {
-        notification.success({
-          message: "Album submitted for review",
-        });
-        history.push(routes.myReleases);
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Error submitting release",
-          description: error.response.data.error,
-        });
-      });
-  };
 
   const next = () => {
     setCurrent(current + 1);
@@ -177,11 +160,6 @@ export default function NewRelease() {
             }
           >
             Next
-          </PrimaryButton>
-        )}
-        {current === steps.length - 1 && (
-          <PrimaryButton type="primary" onClick={submitAlbum}>
-            Publish
           </PrimaryButton>
         )}
       </div>

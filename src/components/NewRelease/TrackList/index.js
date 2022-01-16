@@ -41,7 +41,7 @@ export default function TrackList({ albumId, tracks, setTracks }) {
     });
 
     axios
-      .patch("/songs/" + currentEditTrack._id, { ...values })
+      .patch("/admin/songs/" + currentEditTrack._id, { ...values })
       .then(() => {
         console.log("Album updated");
         notification.success({
@@ -77,7 +77,7 @@ export default function TrackList({ albumId, tracks, setTracks }) {
 
   const addNewTrack = () => {
     axios
-      .post("/songs", { albumId })
+      .post("/admin/admin/songs", { albumId })
       .then((response) => {
         const song = response.data.data.songInfo;
         setTracks((existingSongs) => [...existingSongs, song]);
@@ -92,7 +92,7 @@ export default function TrackList({ albumId, tracks, setTracks }) {
 
   const deleteSong = (songId) => {
     axios
-      .delete("/songs/" + songId)
+      .delete("/admin/songs/" + songId)
       .then(() => {
         setTracks((existingSongs) =>
           existingSongs.filter((s) => s._id !== songId)

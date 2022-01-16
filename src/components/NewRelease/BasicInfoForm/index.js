@@ -79,7 +79,7 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
 
     setSubmitting(true);
     axios
-      .patch("/albums/" + albumId, { ...values })
+      .patch("/admin/albums/" + albumId, { ...values })
       .then(() => {
         const newAlbum = { ...album };
         Object.keys(newAlbum).forEach((key) => {
@@ -155,7 +155,7 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
 
     setLoading(true);
     axios
-      .put(API_URL + "/albums/" + albumId + "/cover", formData, config)
+      .put(API_URL + "/admin/albums/" + albumId + "/cover", formData, config)
       .then((response) => {
         const data = response.data.data;
         const newAlbum = { ...album };
@@ -172,11 +172,11 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
           name="coverArtFile"
           listType="picture-card"
           className="cover-art-uploader"
-          action={uploadAlbumArt}
+          action={() => null}
           showUploadList={false}
-          onDrop={uploadAlbumArt}
-          beforeUpload={beforeUpload}
-          onChange={handleChange}
+          onDrop={() => null}
+          beforeUpload={() => null}
+          onChange={() => null}
         >
           {album.artUrl !== null && !loading ? (
             <img

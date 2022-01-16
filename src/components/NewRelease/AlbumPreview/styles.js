@@ -4,6 +4,10 @@ import theme from "../../../styles/theme";
 export const AlbumPreviewWrapper = styled.div`
   padding: 16px;
 
+  .flex {
+   display : flex;
+  }
+
   .ant-image {
     border-radius: ${theme.container.borderRadius};
     overflow: hidden;

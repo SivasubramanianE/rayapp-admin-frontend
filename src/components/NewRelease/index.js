@@ -135,7 +135,7 @@ export default function NewRelease() {
         {current === 1 && (
           <TrackList albumId={albumId} tracks={tracks} setTracks={setTracks} />
         )}
-        {current === 2 && <AlbumPreview album={album} tracks={tracks} />}
+        {current === 2 && <AlbumPreview album={album} setAlbum={setAlbum} tracks={tracks} />}
       </div>
       <div className="steps-action">
         {current > 0 && (

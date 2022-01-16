@@ -1,14 +1,22 @@
-import { Collapse, Descriptions, Image, message } from "antd";
+import { Collapse, Descriptions, Image, message, Modal, Input } from "antd";
 import { List } from "antd";
 import CollapsePanel from "antd/lib/collapse/CollapsePanel";
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import { TrackListWrapper } from "../TrackList/styles";
 import { PrimaryButton } from "../../common-components/PrimaryButton/styles";
+import { StyledSelect } from "../../common-components/Select/styles";
+import { Option } from "antd/lib/mentions";
+import axios from "axios";
 import { AlbumPreviewWrapper } from "./styles";
 import { copyTextToClipboard } from "../../../utils/clipboard";
+const { TextArea } = Input;
 
-export default function AlbumPreview({ album, tracks }) {
+export default function AlbumPreview({ album, setAlbum, tracks }) {
+  const [visible, setVisible] = React.useState(false);
+  const [reviewComments, setReviewComments] = useState(album.reviewComments);
+  const [status, setStatus] = useState(album.status);
+
   const albumData = [
     { title: "Title", value: album.title },
     { title: "Primary Artist", value: album.primaryArtist },
@@ -21,6 +29,61 @@ export default function AlbumPreview({ album, tracks }) {
       value: moment(album.releaseDate).format("MMMM Do YYYY"),
     },
   ];
+
+  const StatusArr = [
+    "Draft",
+    "Submitted",
+    "Approved",
+    "Released",
+    "Rejected",
+    "ReSubmitted",
+  ];
+
+  const onStatusChange = (status) => {
+    setStatus(status);
+
+    if (status === "Rejected") {
+      setVisible(true);
+    } else {
+      setReviewComments("");
+      setAlbum((album) => {
+        const copy = { ...album };
+        copy.reviewComments = "";
+        return copy;
+      });
+      onReviewComments(status);
+    }
+  };
+
+  const onReviewComments = (status) => {
+    axios
+      .patch("/admin/albums/" + album._id + "/status", {
+        status: status,
+        reviewComments: status === "Rejected" ? reviewComments : "",
+      })
+      .then(() => {
+        message.success(
+          "Album status for " + album.title + " has been set to " + status
+        );
+        setVisible(false);
+        setAlbum((album) => {
+          const copy = { ...album };
+          copy.reviewComments = reviewComments;
+          return copy;
+        });
+      })
+      .catch((e) => {
+        message.error("Failed changing album status for " + album.title);
+      });
+  };
+
+  const setComments = (comments) => {
+    setReviewComments(comments.target.value);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
 
   const copyExcelRows = () => {
     let excelRows = tracks.map((track, index) => {
@@ -63,8 +126,46 @@ export default function AlbumPreview({ album, tracks }) {
 
   return (
     <AlbumPreviewWrapper>
-      <PrimaryButton onClick={copyExcelRows}>Copy Excel Rows</PrimaryButton>
+      <div className="flex">
+        <div style={{ width: 200 }}>
+          <StyledSelect
+            showSearch
+            style={{ width: 100 }}
+            placeholder="Select a status"
+            optionFilterProp="children"
+            defaultValue={album.status}
+            onChange={(s) => onStatusChange(s)}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {album.status}
+            {StatusArr.map((status) => (
+              <Option value={status}>{status}</Option>
+            ))}
+          </StyledSelect>
+        </div>
+
+        <Modal
+          title="Rejected Comments"
+          visible={visible}
+          onOk={() => onReviewComments(status)}
+          onCancel={handleCancel}
+        >
+          <TextArea
+            onChange={setComments}
+            defaultValue={album.reviewComments}
+            value={reviewComments}
+            rows={4}
+          />
+        </Modal>
+
+        <div style={{ paddingLeft: 15 }}>
+          <PrimaryButton onClick={copyExcelRows}>Copy Excel Rows</PrimaryButton>
+        </div>
+      </div>
       <div className="section-heading">Album Info</div>
+
       <TrackListWrapper>
         <Image width={200} src={album.artUrl} />
         <List

@@ -235,6 +235,14 @@ export default function AllReleases() {
       sortDirections: ["descend", "ascend"],
     },
     {
+      title: "UPC",
+      dataIndex: "UPC",
+      render: (UPC) => UPC,
+      ...getColumnSearchProps("UPC"),
+      sorter: (a, b) => ("" + a.UPC).localeCompare(b.UPC),
+      sortDirections: ["descend", "ascend"],
+    }, 
+    {
       title: "Release Date",
       dataIndex: "releaseDate",
       ...getColumnSearchProps("releaseDate"),

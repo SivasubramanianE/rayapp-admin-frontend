@@ -55,5 +55,5 @@ export default function ViewRelease() {
   if (loading) {
     return <Loader></Loader>;
   }
-  return <AlbumPreview album={album} tracks={tracks} />;
+  return <AlbumPreview album={album}  setAlbum={setAlbum} tracks={tracks} />;
 }

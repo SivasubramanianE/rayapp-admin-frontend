@@ -88,11 +88,13 @@ export default function AllReleases() {
   };
 
   const deleteAlbum = (album) => {
+    if (!window.confirm("Are you sure you want to delete this album")) return;
+
     notification.info({
       message: "Deleting album...",
     });
     axios
-      .delete("/albums/" + album._id)
+      .delete("/admin/albums/" + album._id)
       .then(() => {
         notification.success({
           message: "Album deleted",

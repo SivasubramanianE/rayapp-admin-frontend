@@ -77,7 +77,7 @@ export default function TrackList({ albumId, tracks, setTracks }) {
 
   const addNewTrack = () => {
     axios
-      .post("/admin/admin/songs", { albumId })
+      .post("/admin/songs", { albumId })
       .then((response) => {
         const song = response.data.data.songInfo;
         setTracks((existingSongs) => [...existingSongs, song]);

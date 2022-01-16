@@ -6,7 +6,7 @@ import { Page, PageContent } from "./components/common-components/Page/styles";
 import PageHeader from "./components/common-components/PageHeader";
 import { useEffect, useState } from "react";
 import MyReleasesPage from "./pages/MyReleases";
-import AdminTracksPage from "./pages/AdminTracks";
+import AllReleasesPage from "./pages/AllReleases";
 import ViewReleasePage from "./pages/ViewRelease";
 import LoginPage from "./pages/Login";
 import axios from "axios";
@@ -66,10 +66,10 @@ function App() {
               <Route exact path={routes.myReleases}>
                 <MyReleasesPage />
               </Route>
-              <Route exact path={routes.trackList}>
-                <AdminTracksPage />
+              <Route exact path={routes.allReleases}>
+                <AllReleasesPage /> 
               </Route>
-              <Route exact path={routes.viewRelease  + "/:albumId"}>
+              <Route exact path={routes.viewRelease + "/:albumId"}>
                 <ViewReleasePage />
               </Route>
             </PageContent>

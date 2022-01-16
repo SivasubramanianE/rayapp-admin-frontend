@@ -4,7 +4,7 @@ const routes = {
   editRelease: "/edit-release",
   myReleases: "/my-releases",
   analytics: "/analytics",
-  trackList: "/track-list",
+  allReleases: "/all-releases",
   viewRelease: "/view-relese",
 };
 

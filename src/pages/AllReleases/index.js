@@ -1,11 +1,11 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import AdminTracks from "../../components/AdminTracks";
+import AllReleases from "../../components/AllReleases";
 import useTitle from "../../hooks/useTitle";
 import routes from "../../routes/routes";
 import { isLoggedIn } from "../../utils/auth";
 
-export default function AdminTracksPage() {
+export default function AllReleasesPage() {
   useTitle("Admin");
 
   const history = useHistory();
@@ -14,5 +14,5 @@ export default function AdminTracksPage() {
     return null;
   }
 
-  return <AdminTracks></AdminTracks>;
+  return <AllReleases></AllReleases>;
 }

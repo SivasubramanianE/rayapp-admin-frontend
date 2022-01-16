@@ -19,7 +19,7 @@ const steps = [
   },
   {
     id: 1,
-    title: "Track List",
+    title: "All Releases",
   },
   {
     id: 2,

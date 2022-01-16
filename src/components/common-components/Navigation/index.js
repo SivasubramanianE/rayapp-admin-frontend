@@ -2,9 +2,7 @@ import React, { useEffect } from "react";
 import { NavButton, NavigationWrapper } from "./styles";
 import {
   CloseOutlined,
-  FolderFilled,
   FundFilled,
-  PlusCircleFilled,
 } from "@ant-design/icons";
 import { useHistory, useLocation } from "react-router-dom";
 import { getLoggedInUser } from "../../../utils/auth";
@@ -25,28 +23,16 @@ export default function Navigation({
   const navigation = [
     {
       id: 1,
-      title: "My Releases",
-      icon: <FolderFilled />,
-      route: routes.myReleases,
+      title: "All Releases",
+      icon: <FundFilled />,
+      route: routes.allReleases,
     },
     {
       id: 2,
-      title: "New Release",
-      icon: <PlusCircleFilled />,
-      route: routes.newRelease,
-    },
-    {
-      id: 3,
       title: "Anaytics",
       icon: <FundFilled />,
       route: routes.analytics,
       disabled: true,
-    },
-    {
-      id: 4,
-      title: "Track List",
-      icon: <FundFilled />,
-      route: routes.trackList,
     },
   ];
 
@@ -92,10 +78,10 @@ export default function Navigation({
         </div>
         <div className="logo-container">
           <img
-            src="https://www.rayapprelease.com/static/media/LogoHeader.b52f2b32.png"
+            src="https://www.rayapprelease.com/assets/images/logo-main.png"
             alt="RayApp Release"
           ></img>
-          <div className="logo-text">Release Hubᴮᴱᵀᴬ</div>
+          <div className="logo-text">Admin</div>
         </div>
 
         <div className="button-wrapper">

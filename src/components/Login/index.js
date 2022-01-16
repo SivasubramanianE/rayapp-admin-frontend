@@ -46,7 +46,7 @@ export default function Login() {
   const history = useHistory();
   const cookies = new Cookies();
 
-  const redirectToReleases = () => history.push(routes.myReleases);
+  const redirectToReleases = () => history.push(routes.allReleases);
 
   const setAuthCookies = (token, user) => {
     let now = new Date();
@@ -82,11 +82,11 @@ export default function Login() {
       <div className="background-image"></div>
       <div className="login-container">
         <img
-          src="https://www.rayapprelease.com/static/media/LogoHeader.b52f2b32.png"
+          src="https://www.rayapprelease.com/assets/images/logo-main.png"
           alt="RayApp Release"
           className="logo"
         ></img>
-        Release Hubᴮᴱᵀᴬ
+        Admin
         <div className="input-wrapper">
           <StyledInput
             type="email"

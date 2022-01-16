@@ -42,6 +42,12 @@ export default function Navigation({
       route: routes.analytics,
       disabled: true,
     },
+    {
+      id: 4,
+      title: "Track List",
+      icon: <FundFilled />,
+      route: routes.trackList,
+    },
   ];
 
   const changeActiveNav = (nav) => {

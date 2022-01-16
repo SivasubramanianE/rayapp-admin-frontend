@@ -309,6 +309,7 @@ export default function AllReleases() {
         dataSource={releaseList}
         pagination={{ pageSize: 10 }}
         scroll={{ x: 960 }}
+        size="small"
       />
     </AdminReleaseListWrapper>
   );

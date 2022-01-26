@@ -1,4 +1,12 @@
-import { Collapse, Descriptions, Image, message, Modal, Input } from "antd";
+import {
+  Collapse,
+  Descriptions,
+  Image,
+  message,
+  Modal,
+  Input,
+  Alert,
+} from "antd";
 import { List } from "antd";
 import CollapsePanel from "antd/lib/collapse/CollapsePanel";
 import moment from "moment";
@@ -45,17 +53,11 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
     if (status === "Rejected") {
       setVisible(true);
     } else {
-      setReviewComments("");
-      setAlbum((album) => {
-        const copy = { ...album };
-        copy.reviewComments = "";
-        return copy;
-      });
-      onReviewComments(status);
+      submitStatus(status);
     }
   };
 
-  const onReviewComments = (status) => {
+  const submitStatus = (status) => {
     axios
       .patch("/admin/albums/" + album._id + "/status", {
         status: status,
@@ -68,7 +70,8 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
         setVisible(false);
         setAlbum((album) => {
           const copy = { ...album };
-          copy.reviewComments = reviewComments;
+          if (status === "Rejected") copy.reviewComments = reviewComments;
+          else copy.reviewComments = "";
           return copy;
         });
       })
@@ -78,6 +81,7 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
   };
 
   const setComments = (comments) => {
+    console.log(comments.target.value);
     setReviewComments(comments.target.value);
   };
 
@@ -149,7 +153,7 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
         <Modal
           title="Rejected Comments"
           visible={visible}
-          onOk={() => onReviewComments(status)}
+          onOk={() => submitStatus(status)}
           onCancel={handleCancel}
         >
           <TextArea
@@ -165,6 +169,17 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
         </div>
       </div>
       <div className="section-heading">Album Info</div>
+
+      {album.reviewComments && album.reviewComments !== "" && (
+        <Alert
+          message="Album was previously rejected with the following review comments:"
+          description={
+            <pre className="review-comments">{album.reviewComments}</pre>
+          }
+          type="warning"
+          showIcon
+        />
+      )}
 
       <TrackListWrapper>
         <Image width={200} src={album.artUrl} />

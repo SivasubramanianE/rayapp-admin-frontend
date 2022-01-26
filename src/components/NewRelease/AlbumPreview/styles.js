@@ -5,7 +5,7 @@ export const AlbumPreviewWrapper = styled.div`
   padding: 16px;
 
   .flex {
-   display : flex;
+    display: flex;
   }
 
   .ant-image {
@@ -29,6 +29,10 @@ export const AlbumPreviewWrapper = styled.div`
     margin: 24px 0;
     font-size: large;
     font-weight: normal;
+  }
+
+  .review-comments {
+    font-family: unset;
   }
 
   .album-descriptions {

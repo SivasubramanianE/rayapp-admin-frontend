@@ -22,7 +22,8 @@ const StatusArr = [
   "Submitted",
   "Approved",
   "Released",
-  "Rejected",
+  "SentToStores",
+  "TakenDown",
   "ReSubmitted",
 ];
 

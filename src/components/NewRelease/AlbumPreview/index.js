@@ -36,6 +36,14 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
       title: "Release Date",
       value: moment(album.releaseDate).format("MMMM Do YYYY"),
     },
+    {
+      title: "Production Year",
+      value: album.productionYear,
+    },
+    {
+      title: "UPC",
+      value: album.UPC,
+    },
   ];
 
   const StatusArr = [
@@ -44,7 +52,9 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
     "Approved",
     "Released",
     "Rejected",
+    "SentToStores",
     "ReSubmitted",
+    "TakenDown",
   ];
 
   const onStatusChange = (status) => {
@@ -172,7 +182,7 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
 
       {album.reviewComments && album.reviewComments !== "" && (
         <Alert
-          message="Album was previously rejected with the following review comments:"
+          message="This album was previously rejected with the following review comments:"
           description={
             <pre className="review-comments">{album.reviewComments}</pre>
           }
@@ -251,6 +261,18 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
                 label={<div className="detail-label">Sub Genre</div>}
               >
                 {track.subGenre}
+              </Descriptions.Item>
+              <Descriptions.Item
+                span={2}
+                label={<div className="detail-label">ISRC</div>}
+              >
+                {track.ISRC}
+              </Descriptions.Item>
+              <Descriptions.Item
+                span={2}
+                label={<div className="detail-label">Explicit</div>}
+              >
+                {track.explicit ? "Yes" : "No"}
               </Descriptions.Item>
             </Descriptions>
           </CollapsePanel>

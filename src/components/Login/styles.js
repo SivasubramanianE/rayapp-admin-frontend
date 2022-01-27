@@ -36,13 +36,13 @@ export const LoginWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(5px);
     border-radius: ${theme.container.borderRadius};
     box-shadow: 2px 1px 6px 0px rgba(0, 0, 0, 0.02);
+    color: #ffffffD9;
 
     .login-text {
-      color: ${theme.colors.textOnBackground};
       margin-top: 4px;
       font-size: x-small;
     }
@@ -54,6 +54,7 @@ export const LoginWrapper = styled.div`
 
     .logo {
       width: 160px;
+      opacity: 0.9;
     }
 
     .ant-btn {

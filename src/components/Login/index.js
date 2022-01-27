@@ -10,6 +10,7 @@ import {
   StyledPasswordInput,
 } from "../common-components/Input/styles";
 import axios from "axios";
+import LogoWhite from "../../assets/logo-white.png";
 
 export default function Login() {
   const emailRef = useRef();
@@ -81,11 +82,7 @@ export default function Login() {
     <LoginWrapper>
       <div className="background-image"></div>
       <div className="login-container">
-        <img
-          src="https://www.rayapprelease.com/assets/images/logo-main.png"
-          alt="RayApp Release"
-          className="logo"
-        ></img>
+        <img src={LogoWhite} alt="RayApp Release" className="logo"></img>
         Admin
         <div className="input-wrapper">
           <StyledInput

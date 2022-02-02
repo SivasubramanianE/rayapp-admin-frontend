@@ -44,9 +44,14 @@ export default function AllReleases() {
     setPageLoading(true);
     getDraftAlbums()
       .then((response) => {
-        const albums = response.data.data;
+        let albums = response.data.data;
 
         if (albums.length) {
+          albums = albums.map((a) => {
+            a.uploadedBy = a.user[0].name;
+            a.creatorEmail = a.user[0].email;
+            return a;
+          });
           setReleaseList(albums);
         }
       })
@@ -236,13 +241,29 @@ export default function AllReleases() {
       sortDirections: ["descend", "ascend"],
     },
     {
+      title: "Uploaded By",
+      dataIndex: "uploadedBy",
+      render: (uploadedBy) => uploadedBy,
+      ...getColumnSearchProps("uploadedBy"),
+      sorter: (a, b) => ("" + a.uploadedBy).localeCompare(b.uploadedBy),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Creator Email",
+      dataIndex: "creatorEmail",
+      render: (creatorEmail) => creatorEmail,
+      ...getColumnSearchProps("creatorEmail"),
+      sorter: (a, b) => ("" + a.creatorEmail).localeCompare(b.creatorEmail),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
       title: "UPC",
       dataIndex: "UPC",
       render: (UPC) => UPC,
       ...getColumnSearchProps("UPC"),
       sorter: (a, b) => ("" + a.UPC).localeCompare(b.UPC),
       sortDirections: ["descend", "ascend"],
-    }, 
+    },
     {
       title: "Release Date",
       dataIndex: "releaseDate",

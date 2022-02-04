@@ -18,6 +18,7 @@ import { Option } from "antd/lib/mentions";
 import axios from "axios";
 import { AlbumPreviewWrapper } from "./styles";
 import { copyTextToClipboard } from "../../../utils/clipboard";
+import { DownloadOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 
 export default function AlbumPreview({ album, setAlbum, tracks }) {
@@ -121,7 +122,16 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
         tracks.length === 1 ? "Single" : "Album", // track type
         track.language, // lyrics language
         track.language, // title language
-        track.explicit, // parental advisory
+        track.explicit ? "Yes" : "No", // parental advisory
+        "", // territories
+        "", // release price tier
+        "", // tracks per price tier
+        "", // publisher,
+        "", // digital release date
+        "", // physical release date
+        "", // sample start index
+        track.ISRC, // ISRC
+        album.UPC, // UPC
       ];
     });
     excelRows = excelRows.map((lines) => lines.join("\t")).join("\n");
@@ -137,6 +147,30 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
       }
     );
   };
+
+  function saveData(blob, fileName) {
+    // does the same as FileSaver.js
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+
+    var url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  function download(uri, name) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", uri);
+    xhr.responseType = "blob";
+
+    xhr.onload = function () {
+      saveData(this.response, name); // saveAs is now your function
+    };
+    xhr.send();
+  }
 
   return (
     <AlbumPreviewWrapper>
@@ -230,7 +264,28 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
                 span={2}
                 label={<div className="detail-label">Audio File</div>}
               >
-                <audio controls src={track.masterUrl}></audio>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <audio controls src={track.masterUrl}></audio>
+                  <a
+                    href={track.masterUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    download={track.masterUrl}
+                    style={{ marginTop: 24 }}
+                  >
+                    <PrimaryButton>
+                      Download Master File
+                      <DownloadOutlined type="filled" />
+                    </PrimaryButton>
+                  </a>
+                </div>
               </Descriptions.Item>
               <Descriptions.Item
                 span={2}
@@ -243,6 +298,18 @@ export default function AlbumPreview({ album, setAlbum, tracks }) {
                 label={<div className="detail-label">Secondary Artist</div>}
               >
                 {track.secondaryArtist}
+              </Descriptions.Item>
+              <Descriptions.Item
+                span={2}
+                label={<div className="detail-label">Lyricist</div>}
+              >
+                {track.lyricist}
+              </Descriptions.Item>
+              <Descriptions.Item
+                span={2}
+                label={<div className="detail-label">Composer</div>}
+              >
+                {track.composer}
               </Descriptions.Item>
               <Descriptions.Item
                 span={2}

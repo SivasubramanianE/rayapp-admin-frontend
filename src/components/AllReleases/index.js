@@ -69,13 +69,18 @@ export default function AllReleases() {
     history.push(routes.editRelease + "/" + album._id);
   };
 
-  const onStatusChange = (status, album) => {
+  const onStatusChange = (status, album, index) => {
     axios
       .patch("/admin/albums/" + album._id + "/status", {
         status: status,
         reviewComments: "",
       })
       .then(() => {
+        setReleaseList((albums) => {
+          const albumsCopy = [...albums];
+          albumsCopy[index].status = status;
+          return albumsCopy;
+        });
         message.success(
           "Album status for " + album.title + " has been set to " + status
         );
@@ -245,14 +250,14 @@ export default function AllReleases() {
       ...getColumnSearchProps("status"),
       sorter: (a, b) => ("" + a.status).localeCompare(b.status),
       sortDirections: ["descend", "ascend"],
-      render: (status, album) => (
+      render: (status, album, index) => (
         <StyledSelect
           showSearch
           style={{ width: 200 }}
           placeholder="Select a status"
           optionFilterProp="children"
           defaultValue={status}
-          onChange={(s) => onStatusChange(s, album)}
+          onChange={(s) => onStatusChange(s, album, index)}
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
@@ -273,7 +278,18 @@ export default function AllReleases() {
       render: (title, album) => (
         <div className="release-meta" onClick={() => viewAlbum(album)}>
           <div className="release-title">
-            {title || (
+            {title ? (
+              (() => {
+                switch (album.status) {
+                  case "Released":
+                    return <div style={{ color: "#00BFA5" }}>{title}</div>;
+                  case "Approved":
+                    return <div style={{ color: "#FBC02D" }}>{title}</div>;
+                  default:
+                    return title;
+                }
+              })()
+            ) : (
               <span>
                 <i>No information available</i>
               </span>

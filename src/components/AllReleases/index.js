@@ -286,7 +286,7 @@ export default function AllReleases() {
                   case "SentToStores":
                     return <div style={{ color: "#F06292" }}>{title}</div>;
                   case "Approved":
-                    return <div style={{ color: "#FBC02D" }}>{title}</div>;
+                    return <div style={{ color: "#F9A825" }}>{title}</div>;
                   default:
                     return title;
                 }

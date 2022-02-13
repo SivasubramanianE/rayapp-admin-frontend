@@ -215,13 +215,63 @@ export default function AllReleases() {
       sortDirections: ["descend", "ascend"],
     },
     {
+      title: "Actions",
+      render: (album) => (
+        <div className="release-actions">
+          <div className="action-button">
+            <span onClick={() => viewAlbum(album)}>
+              <EyeOutlined />
+              &nbsp;
+            </span>
+          </div>
+          <div className="action-button">
+            <span onClick={() => editAlbum(album)}>
+              <EditOutlined />
+              &nbsp;
+            </span>
+          </div>
+          <div className="action-button danger">
+            <span onClick={() => deleteAlbum(album)}>
+              <DeleteOutlined />
+              &nbsp;
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      ...getColumnSearchProps("status"),
+      sorter: (a, b) => ("" + a.status).localeCompare(b.status),
+      sortDirections: ["descend", "ascend"],
+      render: (status, album) => (
+        <StyledSelect
+          showSearch
+          style={{ width: 200 }}
+          placeholder="Select a status"
+          optionFilterProp="children"
+          defaultValue={status}
+          onChange={(s) => onStatusChange(s, album)}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {status}
+          {StatusArr.map((status) => (
+            <Option value={status}>{status}</Option>
+          ))}
+        </StyledSelect>
+      ),
+    },
+    {
       title: "Release Title",
       dataIndex: "title",
       ...getColumnSearchProps("title"),
       sorter: (a, b) => ("" + a.title).localeCompare(b.title),
       sortDirections: ["descend", "ascend"],
-      render: (title) => (
-        <div className="release-meta">
+      render: (title, album) => (
+        <div className="release-meta" onClick={() => viewAlbum(album)}>
           <div className="release-title">
             {title || (
               <span>
@@ -273,54 +323,12 @@ export default function AllReleases() {
       render: (releaseDate) => moment(releaseDate).format("MMMM Do YYYY"),
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      ...getColumnSearchProps("status"),
-      sorter: (a, b) => ("" + a.status).localeCompare(b.status),
+      title: "Created Date",
+      dataIndex: "createdAt",
+      ...getColumnSearchProps("createdAt"),
+      sorter: (a, b) => ("" + a.createdAt).localeCompare(b.createdAt),
       sortDirections: ["descend", "ascend"],
-      render: (status, album) => (
-        <StyledSelect
-          showSearch
-          style={{ width: 200 }}
-          placeholder="Select a status"
-          optionFilterProp="children"
-          defaultValue={status}
-          onChange={(s) => onStatusChange(s, album)}
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {status}
-          {StatusArr.map((status) => (
-            <Option value={status}>{status}</Option>
-          ))}
-        </StyledSelect>
-      ),
-    },
-    {
-      title: "Actions",
-      render: (album) => (
-        <div className="release-actions">
-          <div className="action-button">
-            <span onClick={() => viewAlbum(album)}>
-              <EyeOutlined />
-              &nbsp;
-            </span>
-          </div>
-          <div className="action-button">
-            <span onClick={() => editAlbum(album)}>
-              <EditOutlined />
-              &nbsp;
-            </span>
-          </div>
-          <div className="action-button danger">
-            <span onClick={() => deleteAlbum(album)}>
-              <DeleteOutlined />
-              &nbsp;
-            </span>
-          </div>
-        </div>
-      ),
+      render: (createdAt) => moment(createdAt).format("MMMM Do YYYY"),
     },
   ];
 
@@ -337,8 +345,12 @@ export default function AllReleases() {
       <Table
         columns={columns}
         dataSource={releaseList}
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: 960 }}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+          pageSizeOptions: ["10", "20", "50", "100", "500", "1000"],
+        }}
+        scroll={{ x: "max-content" }}
         size="small"
       />
     </AdminReleaseListWrapper>

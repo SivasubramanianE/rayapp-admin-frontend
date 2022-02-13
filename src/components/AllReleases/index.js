@@ -299,14 +299,6 @@ export default function AllReleases() {
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Creator Email",
-      dataIndex: "creatorEmail",
-      render: (creatorEmail) => creatorEmail,
-      ...getColumnSearchProps("creatorEmail"),
-      sorter: (a, b) => ("" + a.creatorEmail).localeCompare(b.creatorEmail),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
       title: "UPC",
       dataIndex: "UPC",
       render: (UPC) => UPC,
@@ -329,6 +321,14 @@ export default function AllReleases() {
       sorter: (a, b) => ("" + a.createdAt).localeCompare(b.createdAt),
       sortDirections: ["descend", "ascend"],
       render: (createdAt) => moment(createdAt).format("MMMM Do YYYY"),
+    },
+    {
+      title: "Creator Email",
+      dataIndex: "creatorEmail",
+      render: (creatorEmail) => creatorEmail,
+      ...getColumnSearchProps("creatorEmail"),
+      sorter: (a, b) => ("" + a.creatorEmail).localeCompare(b.creatorEmail),
+      sortDirections: ["descend", "ascend"],
     },
   ];
 

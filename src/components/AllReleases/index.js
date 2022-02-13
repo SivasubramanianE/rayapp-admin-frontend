@@ -264,7 +264,20 @@ export default function AllReleases() {
         >
           {status}
           {StatusArr.map((status) => (
-            <Option value={status}>{status}</Option>
+            <Option value={status}>
+              {(() => {
+                switch (status) {
+                  case "Released":
+                    return <span style={{ color: "#00BFA5" }}>{status}</span>;
+                  case "SentToStores":
+                    return <span style={{ color: "#F06292" }}>{status}</span>;
+                  case "Approved":
+                    return <span style={{ color: "#F9A825" }}>{status}</span>;
+                  default:
+                    return status;
+                }
+              })()}
+            </Option>
           ))}
         </StyledSelect>
       ),
@@ -278,20 +291,7 @@ export default function AllReleases() {
       render: (title, album) => (
         <div className="release-meta" onClick={() => viewAlbum(album)}>
           <div className="release-title">
-            {title ? (
-              (() => {
-                switch (album.status) {
-                  case "Released":
-                    return <div style={{ color: "#00BFA5" }}>{title}</div>;
-                  case "SentToStores":
-                    return <div style={{ color: "#F06292" }}>{title}</div>;
-                  case "Approved":
-                    return <div style={{ color: "#F9A825" }}>{title}</div>;
-                  default:
-                    return title;
-                }
-              })()
-            ) : (
+            {title || (
               <span>
                 <i>No information available</i>
               </span>

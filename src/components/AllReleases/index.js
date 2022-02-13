@@ -283,6 +283,8 @@ export default function AllReleases() {
                 switch (album.status) {
                   case "Released":
                     return <div style={{ color: "#00BFA5" }}>{title}</div>;
+                  case "SentToStores":
+                    return <div style={{ color: "#F06292" }}>{title}</div>;
                   case "Approved":
                     return <div style={{ color: "#FBC02D" }}>{title}</div>;
                   default:

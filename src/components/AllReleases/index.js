@@ -123,7 +123,13 @@ export default function AllReleases() {
   };
 
   const deleteAlbum = (album) => {
-    if (!window.confirm("Are you sure you want to delete this album")) return;
+    if (
+      window.prompt(
+        `Type "${album.title || album.fingerprint}" to delete this album`
+      ) !== album.title &&
+      album.fingerprint
+    )
+      return;
 
     notification.info({
       message: "Deleting album...",

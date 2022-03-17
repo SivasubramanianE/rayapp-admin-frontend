@@ -41,10 +41,8 @@ export default function AllReleases() {
 
   const getAllReleases = (limit, offset) => {
     setTableLoading(true);
-    (limit && offset
-      ? axios.get("/admin/albums", { params: { limit: limit, offset: offset } })
-      : axios.get("/admin/albums")
-    )
+    axios
+      .get("/admin/albums", { params: { limit: limit, offset: offset } })
       .then((response) => {
         let albums = response.data.data.albums;
 

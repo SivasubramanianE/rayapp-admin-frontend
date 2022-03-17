@@ -28,7 +28,8 @@ const StatusArr = [
 ];
 
 export default function AllReleases() {
-  const [pageLoading, setPageLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
   const [releaseList, setReleaseList] = useState([]);
   const [state, setState] = useState({
     searchText: "",
@@ -38,13 +39,14 @@ export default function AllReleases() {
 
   const history = useHistory();
 
-  const getDraftAlbums = () => axios.get("/admin/albums");
-
-  useEffect(() => {
-    setPageLoading(true);
-    getDraftAlbums()
+  const getAllReleases = (limit, offset) => {
+    setTableLoading(true);
+    (limit && offset
+      ? axios.get("/admin/albums", { params: { limit: limit, offset: offset } })
+      : axios.get("/admin/albums")
+    )
       .then((response) => {
-        let albums = response.data.data;
+        let albums = response.data.data.albums;
 
         if (albums.length) {
           albums = albums.map((a) => {
@@ -53,13 +55,37 @@ export default function AllReleases() {
             return a;
           });
           setReleaseList(albums);
+          setTotalCount(response.data.data.totalCount);
+        } else {
+          setReleaseList([]);
         }
       })
       .finally(() => {
-        setPageLoading(false);
+        setTableLoading(false);
       });
+  };
+
+  useEffect(() => {
+    getAllReleases(10, 0);
     // eslint-disable-next-line
   }, []);
+
+  const getData = (offset, limit) => {
+    getAllReleases(limit, offset);
+  };
+
+  const handleChange = (pagination, filters, sorter) => {
+    const offset =
+      pagination.current * pagination.pageSize - pagination.pageSize;
+    const limit = pagination.pageSize;
+    const params = {};
+
+    if (sorter.hasOwnProperty("column")) {
+      params.order = { field: sorter.field, dir: sorter.order };
+    }
+
+    getData(offset, limit, params);
+  };
 
   const viewAlbum = (album) => {
     history.push(routes.viewRelease + "/" + album._id);
@@ -250,37 +276,40 @@ export default function AllReleases() {
       ...getColumnSearchProps("status"),
       sorter: (a, b) => ("" + a.status).localeCompare(b.status),
       sortDirections: ["descend", "ascend"],
-      render: (status, album, index) => (
-        <StyledSelect
-          showSearch
-          style={{ width: 200 }}
-          placeholder="Select a status"
-          optionFilterProp="children"
-          defaultValue={status}
-          onChange={(s) => onStatusChange(s, album, index)}
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {status}
-          {StatusArr.map((status) => (
-            <Option value={status}>
-              {(() => {
-                switch (status) {
-                  case "Released":
-                    return <span style={{ color: "#00BFA5" }}>{status}</span>;
-                  case "SentToStores":
-                    return <span style={{ color: "#F06292" }}>{status}</span>;
-                  case "Approved":
-                    return <span style={{ color: "#F9A825" }}>{status}</span>;
-                  default:
-                    return status;
-                }
-              })()}
-            </Option>
-          ))}
-        </StyledSelect>
-      ),
+      render: (status, album, index) =>
+        tableLoading ? (
+          <div style={{ height: 40 }}></div>
+        ) : (
+          <StyledSelect
+            showSearch
+            style={{ width: 200 }}
+            placeholder="Select a status"
+            optionFilterProp="children"
+            defaultValue={status}
+            onChange={(s) => onStatusChange(s, album, index)}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {status}
+            {StatusArr.map((status) => (
+              <Option value={status}>
+                {(() => {
+                  switch (status) {
+                    case "Released":
+                      return <span style={{ color: "#00BFA5" }}>{status}</span>;
+                    case "SentToStores":
+                      return <span style={{ color: "#F06292" }}>{status}</span>;
+                    case "Approved":
+                      return <span style={{ color: "#F9A825" }}>{status}</span>;
+                    default:
+                      return status;
+                  }
+                })()}
+              </Option>
+            ))}
+          </StyledSelect>
+        ),
     },
     {
       title: "Release Title",
@@ -350,14 +379,6 @@ export default function AllReleases() {
     },
   ];
 
-  if (pageLoading) {
-    return (
-      <AdminReleaseListWrapper>
-        <Loader />
-      </AdminReleaseListWrapper>
-    );
-  }
-
   return (
     <AdminReleaseListWrapper>
       <Table
@@ -365,10 +386,11 @@ export default function AllReleases() {
         dataSource={releaseList}
         pagination={{
           defaultPageSize: 10,
-          showSizeChanger: true,
-          pageSizeOptions: ["10", "20", "50", "100", "500", "1000"],
+          total: totalCount,
         }}
+        loading={tableLoading}
         scroll={{ x: "max-content" }}
+        onChange={handleChange}
         size="small"
       />
     </AdminReleaseListWrapper>

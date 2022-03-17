@@ -265,12 +265,6 @@ export default function AllReleases() {
               &nbsp;
             </span>
           </div>
-          <div className="action-button danger">
-            <span onClick={() => deleteAlbum(album)}>
-              <DeleteOutlined />
-              &nbsp;
-            </span>
-          </div>
         </div>
       ),
     },
@@ -380,6 +374,19 @@ export default function AllReleases() {
       ...getColumnSearchProps("creatorEmail"),
       sorter: (a, b) => ("" + a.creatorEmail).localeCompare(b.creatorEmail),
       sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Delete",
+      render: (album) => (
+        <div className="release-actions">
+          <div className="action-button danger">
+            <span onClick={() => deleteAlbum(album)}>
+              <DeleteOutlined />
+              &nbsp;
+            </span>
+          </div>
+        </div>
+      ),
     },
   ];
 

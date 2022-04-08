@@ -1,6 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AdminReleaseListWrapper } from "./styles";
-import { notification, Table, Input, Button, Space, message } from "antd";
+import {
+  notification,
+  Table,
+  Input,
+  Button,
+  Space,
+  message,
+  Badge,
+  Tag,
+} from "antd";
 import axios from "axios";
 import moment from "moment";
 import Loader from "../common-components/Loader";
@@ -27,7 +36,7 @@ const StatusArr = [
   "ReSubmitted",
 ];
 
-export default function AllReleases() {
+export default function AllReleases({ setPageTitle }) {
   const [tableLoading, setTableLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [releaseList, setReleaseList] = useState([]);
@@ -38,6 +47,16 @@ export default function AllReleases() {
   const searchInput = useRef();
 
   const history = useHistory();
+
+  useEffect(
+    () =>
+      setPageTitle(
+        <>
+          All Releases <Tag color="#108ee9">{totalCount}</Tag>
+        </>
+      ),
+    [totalCount]
+  );
 
   const getAllReleases = (limit, offset) => {
     setTableLoading(true);

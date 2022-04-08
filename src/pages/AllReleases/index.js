@@ -5,7 +5,7 @@ import useTitle from "../../hooks/useTitle";
 import routes from "../../routes/routes";
 import { isLoggedIn } from "../../utils/auth";
 
-export default function AllReleasesPage() {
+export default function AllReleasesPage({ setPageTitle }) {
   useTitle("Admin");
 
   const history = useHistory();
@@ -14,5 +14,5 @@ export default function AllReleasesPage() {
     return null;
   }
 
-  return <AllReleases></AllReleases>;
+  return <AllReleases setPageTitle={setPageTitle}></AllReleases>;
 }

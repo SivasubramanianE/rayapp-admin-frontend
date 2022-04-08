@@ -67,7 +67,7 @@ function App() {
                 <MyReleasesPage />
               </Route>
               <Route exact path={routes.allReleases}>
-                <AllReleasesPage /> 
+                <AllReleasesPage setPageTitle={setPageTitle} />
               </Route>
               <Route exact path={routes.viewRelease + "/:albumId"}>
                 <ViewReleasePage />

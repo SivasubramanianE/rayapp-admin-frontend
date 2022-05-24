@@ -52,7 +52,7 @@ export default function AllReleases({ setPageTitle }) {
     () =>
       setPageTitle(
         <>
-          All Releases <Tag color="#108ee9">{totalCount}</Tag>
+          All Releases {/* <Tag color="#108ee9">{totalCount}</Tag> */}
         </>
       ),
     [totalCount]

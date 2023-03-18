@@ -64,8 +64,6 @@ export default function NewRelease() {
     getAlbumDetails()
       .then((response) => {
         let album = response.data.data;
-        if (album.artUrl)
-          album.artUrl = album.artUrl + "&version=" + +new Date();
         if (album.title === undefined) album = { ...albumSchema, ...album };
         setAlbum(album);
         setTracks(album.songs);

@@ -159,7 +159,7 @@ export default function BasicInfoForm({ nextStep, albumId, album, setAlbum }) {
       .then((response) => {
         const data = response.data.data;
         const newAlbum = { ...album };
-        newAlbum.artUrl = data.signedUrl + "&version=" + +new Date();
+        newAlbum.artUrl = data.signedUrl;
         setAlbum(newAlbum);
       })
       .finally(() => setLoading(false));

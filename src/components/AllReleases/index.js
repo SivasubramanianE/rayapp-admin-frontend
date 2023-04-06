@@ -25,6 +25,7 @@ import {
 } from "@ant-design/icons";
 import routes from "../../routes/routes";
 import { useHistory } from "react-router";
+import { convertObject } from "../../utils/common";
 
 const StatusArr = [
   "Draft",
@@ -58,10 +59,11 @@ export default function AllReleases({ setPageTitle }) {
     [totalCount]
   );
 
-  const getAllReleases = (limit, offset) => {
+  const getAllReleases = (limit, offset, filters) => {
     setTableLoading(true);
+    let searchStrings = JSON.stringify(convertObject(filters))
     axios
-      .get("/admin/albums", { params: { limit: limit, offset: offset } })
+      .get("/admin/albums", { params: { limit: limit, offset: offset , searchFields: searchStrings} })
       .then((response) => {
         let albums = response.data.data.albums;
 
@@ -82,13 +84,15 @@ export default function AllReleases({ setPageTitle }) {
       });
   };
 
+
+
   useEffect(() => {
-    getAllReleases(10, 0);
+    getAllReleases(10, 0, {});
     // eslint-disable-next-line
   }, []);
 
-  const getData = (offset, limit) => {
-    getAllReleases(limit, offset);
+  const getData = (offset, limit,params,filters) => {
+    getAllReleases(limit, offset, filters);
   };
 
   const handleChange = (pagination, filters, sorter) => {
@@ -101,7 +105,7 @@ export default function AllReleases({ setPageTitle }) {
       params.order = { field: sorter.field, dir: sorter.order };
     }
 
-    getData(offset, limit, params);
+    getData(offset, limit, params, filters);
   };
 
   const viewAlbum = (album) => {
